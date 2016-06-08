@@ -1,0 +1,14 @@
+/dev/*
+/run/*
+/tmp/*
+/run/*
+/proc/*
+/sys/*
+/mnt/*
+/media/*
+/lost+found
+/home/downloads
+/home/.cache
+/var/abs/* 
+/var/log/* 
+/var/tmp/*

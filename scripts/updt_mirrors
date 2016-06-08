@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# a simple script to update the mirrorlist once every 24 hours
+# since the last time the script ran or the mirrorlist was 
+# manually updated.
+
+last_update=$(date --reference=/etc/pacman.d/mirrorlist +%s)
+current_date=$(date +%s)
+elapsed=$(( $current_date - $last_update ))
+
+#update once a day
+update_interval=86400
+
+if [ $elapsed -ge $update_interval ]; then
+	# run reflector in the background.
+	sudo reflector -p https -l 30 --sort rate --save /etc/pacman.d/mirrorlist & disown
+	
+	# get pid of most recently spawned background process
+	reflector_pid=$!
+	delay=0.75
+	printf "\n  updating pacman mirrorlist"
+	
+	# while reflector runs, print dot and sleep 3/4 seconds
+	while [ -d /proc/$reflector_pid ]; do
+		printf "."
+		sleep $delay
+	done
+
+	printf "\n"
+	
+	# wait for $reflector_pid to exit, then get its exit status
+	wait $reflector_pid
+	reflector_status=$?
+	
+	# print status of mirror update
+	if [[ $reflector_status == 0 ]]; then
+		printf "  *** mirrorlist successfully updated! *** \n\n" 
+	else
+		printf "  mirrorlist failed to update :( \n\n"
+	fi
+fi

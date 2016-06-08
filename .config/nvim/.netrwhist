@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/cjd/builds/linux/Documentation'
+let g:netrw_dirhist_2='/home/cjd/builds/linux/Documentation/DocBook'
+let g:netrw_dirhist_3='/home/cjd/downloads/python-3.5.1-docs-text/library'
+let g:netrw_dirhist_4='/home/cjd/builds/linux/drivers/acpi'
+let g:netrw_dirhist_5='/home/cjd/scripts/test'
+let g:netrw_dirhist_6='/home/cjd/builds/linux'
+let g:netrw_dirhist_7='/home/cjd/builds/linux/lib'
