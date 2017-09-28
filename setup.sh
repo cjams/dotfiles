@@ -6,11 +6,7 @@ then
     exit
 fi
 
-if [ ! -e /usr/bin/nvim ];
-then
-    echo "Please install neovim and then try again"
-    exit
-fi
+sudo pacman -S neovim git --needed --no-confirm
 
 cp -v ~/dotfiles/git-prompt.sh ~/.git-prompt.sh
 cp -v ~/dotfiles/git-completion.bash ~/.git-completion.bash
