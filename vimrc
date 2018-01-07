@@ -1,6 +1,7 @@
 
 set nocompatible
 syntax on
+filetype plugin indent on
 
 set ruler
 set nohls
@@ -8,8 +9,12 @@ set relativenumber
 set number
 set autoindent
 set confirm
-
-set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+set title
+set tabstop=8
+set softtabstop=0
+set expandtab
+set shiftwidth=4
+set smarttab
 
 colorscheme lettuce
 
