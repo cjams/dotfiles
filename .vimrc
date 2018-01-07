@@ -21,3 +21,6 @@ fun! <SID>strip_trailing_whitespace()
 endfun
 
 autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
+
+inoremap nn <ESC>
+let mapleader=","
