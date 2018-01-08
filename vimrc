@@ -9,11 +9,18 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mileszs/ack.vim'
+Plugin 'vim-airline/vim-airline'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'prabirshrestha/async.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'prabirshrestha/asyncomplete.vim'
+Plugin 'prabirshrestha/asyncomplete-lsp.vim'
 
 call vundle#end()
 filetype plugin indent on
 syntax on
 
+set updatetime=250
 set ruler
 set nohls
 set relativenumber
@@ -38,8 +45,16 @@ fun! <SID>strip_trailing_whitespace()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
-
 autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
+
+let g:lsp_async_completion=1
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd']},
+        \ 'whitelist': ['c', 'cpp'],
+        \ })
+endif
 
 inoremap jj <ESC>
 inoremap <ESC> <NOP>
@@ -62,10 +77,12 @@ nnoremap <leader>s :w<CR>
 nnoremap <leader>se :wq<CR>
 
 " remap fugitive
-nnoremap <leader>g :Git
 nnoremap <leader>gw :Gwrite
 nnoremap <leader>gr :Gread
+nnoremap <leader>gm :Gmove
 nnoremap <leader>gc :Gcommit
+nnoremap <leader>gs :Gstatus
+nnoremap <leader>gd :Gdiff
 
  " remap ack
  nnoremap <leader>a :Ack
