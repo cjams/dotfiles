@@ -7,7 +7,7 @@ then
 fi
 
 sudo pacman -Syu --no-confirm
-sudo pacman -S vim git ack fish --needed --no-confirm
+sudo pacman -S clang-tools-extra vim git ack fish --needed --no-confirm
 
 dir=$(dirname $(readlink -f $0))
 
