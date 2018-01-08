@@ -6,18 +6,22 @@ then
     exit
 fi
 
-sudo pacman -S neovim git --needed --no-confirm
+sudo pacman -Syu --no-confirm
+sudo pacman -S vim git ack fish --needed --no-confirm
 
-cp -v ~/dotfiles/git-prompt.sh ~/.git-prompt.sh
-cp -v ~/dotfiles/git-completion.bash ~/.git-completion.bash
-cp -v ~/dotfiles/.bashrc ~/.bashrc
+dir=$(dirname $(readlink -f $0))
 
-mkdir -v -p ~/.config/nvim/colors
-cp -v ~/dofiles/lettuce.vim ~/.config/nvim/colors/lettuce.vim
-cp -v ~/dotfiles/.vimrc ~/.config/nvim/init.vim
+ln -s $dir/config ~/.config
+ln -s $dir/vimrc ~/.vimrc
+ln -s $dir/vim ~/.vim
 
-source ~/.bashrc
+vim +PluginInstall +qall
 
 git config --global user.email "\"$1\""
 git config --global user.name "\"$2\""
-git config --global core.editor nvim
+git config --global core.editor vim
+
+git config --global alias.co 'checkout'
+git config --global alias.br 'branch'
+git config --global alias.ci 'commit'
+git config --global alias.st 'status'

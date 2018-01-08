@@ -1,0 +1,29 @@
+#
+# Build artifacts
+#
+*.a
+*.bin
+compile_commands.json
+*.elf
+*.gz
+*.mod.c
+*.o
+*.o.*
+*.order
+*.so
+
+#
+# Edit artifacts
+#
+*.swp
+
+
+#
+# Top-level files
+#
+/tags
+
+#
+# Don't ignore, even if dot-files
+#
+!.gitignore
