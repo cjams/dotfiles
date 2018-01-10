@@ -8,9 +8,9 @@ fi
 
 dir="$HOME/dotfiles"
 
-ln -sv $dir/config/fish ~/.config/fish
-ln -sv $dir/vimrc ~/.vimrc
-ln -sv $dir/vim ~/.vim
+ln -sfv $dir/config/fish ~/.config/fish
+ln -sfv $dir/vimrc ~/.vimrc
+ln -sfv $dir/vim ~/.vim
 
 sudo pacman -Syu --noconfirm
 sudo pacman -S clang-tools-extra vim git ack fish --needed --noconfirm
