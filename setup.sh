@@ -32,9 +32,8 @@ git config --global alias.st 'status'
 git config --global alias.re 'remote'
 
 sudo chsh -s /usr/bin/fish $(whoami)
-fish -c set -e EDITOR
-fish -c set -U EDITOR /usr/bin/vim
-fish -c set -U fish_color_cwd white
-
+fish -c "set -e EDITOR"
+fish -c "set -U EDITOR /usr/bin/vim"
+fish -c "set -U fish_color_cwd white"
 
 
