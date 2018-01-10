@@ -48,16 +48,19 @@ endfun
 autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
 
 let g:lsp_async_completion=1
-if executable('clangd')
+if (executable('clangd'))
     au User lsp_setup call lsp#register_server({
         \ 'name': 'clangd',
         \ 'cmd': {server_info->['clangd']},
-        \ 'whitelist': ['c', 'cpp'],
+        \ 'whitelist': ['c', 'cpp', 'h']
         \ })
 endif
 
 inoremap jj <ESC>
 inoremap <ESC> <NOP>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 
 let mapleader=","
 

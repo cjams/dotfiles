@@ -6,14 +6,18 @@ then
     exit
 fi
 
-sudo pacman -Syu --no-confirm
-sudo pacman -S clang-tools-extra vim git ack fish --needed --no-confirm
+dir="$HOME/dotfiles"
 
-dir=$(dirname $(readlink -f $0))
+ln -sv $dir/config/fish ~/.config/fish
+ln -sv $dir/vimrc ~/.vimrc
+ln -sv $dir/vim ~/.vim
 
-ln -s $dir/config ~/.config
-ln -s $dir/vimrc ~/.vimrc
-ln -s $dir/vim ~/.vim
+sudo pacman -Syu --noconfirm
+sudo pacman -S clang-tools-extra vim git ack fish --needed --noconfirm
+
+pushd ~/.vim
+git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
+popd
 
 vim +PluginInstall +qall
 
