@@ -11,9 +11,10 @@ dir="$HOME/dotfiles"
 ln -sfv $dir/config/fish ~/.config/fish
 ln -sfv $dir/vimrc ~/.vimrc
 ln -sfv $dir/vim ~/.vim
+ln -sfv $dir/bashrc ~/.bashrc
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S clang-tools-extra vim git ack fish --needed --noconfirm
+sudo pacman -S vim git ack fish --needed --noconfirm
 
 pushd ~/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
@@ -30,10 +31,3 @@ git config --global alias.br 'branch'
 git config --global alias.ci 'commit'
 git config --global alias.st 'status'
 git config --global alias.re 'remote'
-
-sudo chsh -s /usr/bin/fish $(whoami)
-fish -c "set -e EDITOR"
-fish -c "set -U EDITOR /usr/bin/vim"
-fish -c "set -U fish_color_cwd white"
-
-
