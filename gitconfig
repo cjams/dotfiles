@@ -1,0 +1,12 @@
+[user]
+	email = \"davisc@ainfosec.com\"
+	name = \"Connor Davis\"
+[alias]
+	co = checkout
+	br = branch
+	re = remote
+	ci = commit
+	st = status
+	us = reset HEAD --
+[core]
+	editor = vim
