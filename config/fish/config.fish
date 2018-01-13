@@ -13,4 +13,3 @@
 #set -g theme_show_exit_status no
 
 set -U fish_color_cwd white
-set -U Z_CMD "j"
