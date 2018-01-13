@@ -65,11 +65,15 @@ inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 
 let mapleader=","
 
+" remap window navigation
 nnoremap <leader>w <C-w>v<C-w>l
 nnoremap <leader>wh <C-w>h
 nnoremap <leader>wj <C-w>j
 nnoremap <leader>wk <C-w>k
 nnoremap <leader>wl <C-w>l
+
+" remap tab creation
+nnoremap <leader>te :tabedit
 
 " remap quit
 nnoremap <leader>e :q<CR>
