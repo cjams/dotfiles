@@ -1,8 +1,0 @@
-*background: #000000
-*foreground: #fdf5e6
-XTerm*utf8: 1
-XTerm*termName:   xterm-256color
-XTerm*locale:     true
-XTerm*faceName: Inconsolata
-XTerm*faceSize: 11
-xterm*loginShell: true
