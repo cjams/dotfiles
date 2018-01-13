@@ -38,7 +38,11 @@ set smarttab
 set colorcolumn=80
 highlight ColorColumn ctermbg=darkgray
 
-colorscheme lettuce
+if $TERM != "linux"
+    colorscheme lettuce
+else
+    colorscheme slate
+endif
 
 fun! <SID>strip_trailing_whitespace()
     let l = line(".")
