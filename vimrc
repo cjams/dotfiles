@@ -61,20 +61,24 @@ if (executable('clangd'))
         \ })
 endif
 
-inoremap jj <ESC>
-inoremap <ESC> <NOP>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 
 let mapleader=","
 
+inoremap <leader>r <Esc>
+vnoremap <leader>r <Esc>
+
 " remap window navigation
-nnoremap <leader>w <C-w>v<C-w>l
-nnoremap <leader>wh <C-w>h
-nnoremap <leader>wj <C-w>j
-nnoremap <leader>wk <C-w>k
-nnoremap <leader>wl <C-w>l
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+
+" remap splits
+nnoremap <leader>wv <C-w>H
+nnoremap <leader>wf <C-w>K
 
 " remap tab creation
 nnoremap <leader>te :tabedit
