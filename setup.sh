@@ -14,7 +14,7 @@ ln -sfv $dir/vim ~/.vim
 ln -sfv $dir/bashrc ~/.bashrc
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S vim git ack fish --needed --noconfirm
+sudo pacman -S vim git ack fish --needed
 
 pushd ~/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
