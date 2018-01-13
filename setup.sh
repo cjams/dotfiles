@@ -2,17 +2,17 @@
 
 dir="$HOME/dotfiles"
 
-ln -sfv $dir/bashrc ~/.bashrc
 ln -sfv $dir/config/fish ~/.config/fish
 ln -sfv $dir/gitconfig ~/.gitconfig
 ln -sfv $dir/vim ~/.vim
 ln -sfv $dir/vimrc ~/.vimrc
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S vim git ack fish --needed
+sudo pacman -S ack fish git openssh vim --needed
 
 pushd ~/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
+vim +PluginInstall +qall
 popd
 
-vim +PluginInstall +qall
+sudo chsh -s $(which fish) $USER
