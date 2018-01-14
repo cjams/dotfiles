@@ -1,15 +1,44 @@
 #!/usr/bin/fish
 
-#
-# Options for bobthefish
-#
-#set -g theme_date_format "+%a %m.%d.%y %H:%M"
-#set -g theme_nerd_fonts yes
-#set -g theme_display_git_untracked no
-#set -g theme_display_git_ahead_verbose no
-#set -g theme_display_virtualenv no
-#set -g theme_display_ruby no
-#set -g theme_display_vi yes
-#set -g theme_show_exit_status no
-
 set -U fish_color_cwd white
+
+#
+# Start the ssh agent
+#
+setenv SSH_ENV $HOME/.ssh/environment
+
+function start_agent
+    echo "Starint new ssh-agent"
+    ssh-agent -c | sed 's/^echo/#echo/' > $SSH_ENV
+    echo "succeeded"
+    chmod 600 $SSH_ENV
+    . $SSH_ENV > /dev/null
+    ssh-add
+end
+
+function test_identities
+    ssh-add -l | grep "The agent has no identities" > /dev/null
+    if [ $status -eq 0 ]
+        ssh-add
+        if [ $status -eq 2 ]
+            start_agent
+        end
+    end
+end
+
+if [ -n "$SSH_AGENT_PID" ]
+    ps -ef | grep $SSH_AGENT_PID | grep ssh-agent > /dev/null
+    if [ $status -eq 0 ]
+        test_identities
+    end
+else
+    if [ -f $SSH_ENV ]
+        . $SSH_ENV > /dev/null
+    end
+    ps -ef | grep $SSH_AGENT_PID | grep -v grep | grep ssh-agent > /dev/null
+    if [ $status -eq 0 ]
+        test_identities
+    else
+        start_agent
+    end
+end
