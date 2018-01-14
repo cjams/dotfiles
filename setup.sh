@@ -22,5 +22,4 @@ popd
 popd
 
 sudo chsh -s $(which fish) $USER
-
-fish -c ./setup.fish
+fish -c $dir/setup.fish
