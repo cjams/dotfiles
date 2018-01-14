@@ -7,9 +7,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'Yggdroot/LeaderF'
 Plugin 'tpope/vim-fugitive'
-Plugin 'mileszs/ack.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'prabirshrestha/async.vim'
@@ -38,6 +37,10 @@ set smarttab
 set colorcolumn=80
 highlight ColorColumn ctermbg=darkgray
 
+" set grep program
+set grepprg=ag\ --vimgrep\ $*
+set grepformat=%f:%l:%c:%m
+
 if $TERM != "linux"
     colorscheme lettuce
 else
@@ -61,36 +64,56 @@ if (executable('clangd'))
         \ })
 endif
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
 
 let mapleader=","
 
-inoremap <leader>r <Esc>
-vnoremap <leader>r <Esc>
+inoremap <leader>f <esc>
+vnoremap <leader>f <esc>
+
+" default search tool for LeaderF
+let g:Lf_DefaultExternalTool = 'ag'
+
+" default search mode for LeaderF
+let g:Lf_DefaultMode = 'FullPath'
+
+" set LeaderF colorscheme
+let g:Lf_StlColorscheme = 'powerline'
+
+" set LeaderF shortcut for searching files
+let g:Lf_ShortcutF = '<leader>c'
+
+" set LeaderF shortcut for searching buffer
+let g:Lf_ShortcutB = '<leader>b'
+
+let g:Lf_WildIgnore = {
+    \ 'dir': ['.svn','.git','.hg','build/*'],
+    \ 'file': ['*.bak','*.o','*.so','*.py[co]']
+\ }
 
 " remap window navigation
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
+nnoremap <leader>h <c-w>h
+nnoremap <leader>j <c-w>j
+nnoremap <leader>k <c-w>k
+nnoremap <leader>l <c-w>l
 
-" remap splits
-nnoremap <leader>wv <C-w>H
-nnoremap <leader>wf <C-w>K
+" remap split-orientation toggle
+nnoremap <leader>wv <c-w>H
+nnoremap <leader>wf <c-w>K
 
 " remap tab creation
-nnoremap <leader>te :tabedit
+nnoremap <leader>t :tabedit<cr>
 
 " remap quit
-nnoremap <leader>e :q<CR>
+nnoremap <leader>d :q<cr>
 
 " remap write
-nnoremap <leader>s :w<CR>
+nnoremap <leader>s :w<cr>
 
-" remap write then quit
-nnoremap <leader>se :wq<CR>
+" remap write then close
+nnoremap <leader>sd :wq<cr>
 
 " remap fugitive
 nnoremap <leader>gw :Gwrite
@@ -101,4 +124,7 @@ nnoremap <leader>gs :Gstatus
 nnoremap <leader>gd :Gdiff
 
  " remap ack
- nnoremap <leader>a :Ack
+ nnoremap <leader>a :Ack<space>
+
+ " goto file under cursor
+ nnoremap gf :vertical wincmd f<cr>
