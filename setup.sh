@@ -7,6 +7,8 @@ rm -rf $HOME/.gitconfig
 rm -rf $HOME/.vim
 rm -rf $HOME/.vimrc
 
+mkdir -pv $HOME/.config
+
 ln -sfv $dir/config/fish $HOME/.config/fish
 ln -sfv $dir/gitconfig $HOME/.gitconfig
 ln -sfv $dir/vim $HOME/.vim
