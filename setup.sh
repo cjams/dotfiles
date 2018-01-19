@@ -16,7 +16,8 @@ ln -sfv $dir/vimrc $HOME/.vimrc
 
 sudo pacman -Syu --noconfirm
 sudo pacman -S python ctags fish git openssh vim --needed
-sudo pacman -S the_silver_searcher --needed
+sudo pacman -S asp the_silver_searcher --needed
+sudo pacman -S linux-headers linux-tools --needed
 
 pushd $HOME/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
@@ -27,6 +28,9 @@ pushd bundle/LeaderF
 
 popd
 popd
+
+sudo cp -v $dir/linux/perf.conf /etc/sysctl.d/perf.conf
+sudo sysctl -p /etc/sysctl.d/perf.conf
 
 sudo chsh -s $(which fish) $USER
 fish -c $dir/setup.fish
