@@ -47,42 +47,63 @@ echo_error()
 }
 
 device=""
-city=""
+city="Chicago"
+boot="bios"
 host="dev"
-table="msdos"
+label="msdos"
 fs="ext4"
 region="America"
 
-short_opts="d:p:f:c:n:h"
-long_opts="disk:,partition-table:,filesystem:,city:,name:,help"
+short_opts="b:d:p:f:c:n:h"
+long_opts="boot:,disk:,part-label:,fs:,city:,name:,help,uefi"
 
 echo_usage()
 {
     echo "Usage:"
-    echo "  sysinit -d|--disk <disk> [options]"
+    echo "  sysinit -b | --boot <boot> -d | --disk <disk> [options]"
     echo ""
     echo "Overview:"
     echo "  Initialize the Arch Linux system using /dev/<disk> as the device"
     echo "  for the root filesystem. The device will be formatted with a new"
-    echo "  partition table and filesystem."
+    echo "  partition label and filesystem. If <boot> is uefi, then a FAT"
+    echo "  partition /boot will be made for the EFI partition. Otherwise, "
+    echo "  only one partition, /, will be created."
     echo ""
     echo "Options:"
-    echo "  -p, --partition-table   gpt | msdos (default: $table)"
-    echo "  -f, --filesystem        filesystem type (default: $fs)"
-    echo "  -c, --city              city for timezone (default: $city)"
-    echo "  -n, --name              hostname (default: $host)"
-    echo "  -h, --help              print this help"
+    echo "  -b, --boot         uefi | bios (default: $boot)"
+    echo "  -p, --part-label   gpt | msdos (default: $label)"
+    echo "  -f, --fs           flesystem type (default: $fs)"
+    echo "  -c, --city         city for timezone (default: $city)"
+    echo "  -n, --name         hostname (default: $host)"
+    echo "  -h, --help         print this help"
     echo ""
 }
 
-#
-# Parse options
-#
-if [[ $# -lt 2 ]]; then
-    echo_usage
-    exit 1
-fi
+ckopt_boot()
+{
+    case "$boot" in
+        u|uefi|U|UEFI) boot=uefi;;
+        b|bios|B|BIOS) boot=msdos;;
+        *) echo_error "unsupported boot type: $boot" && exit;;
+    esac
+}
 
+ckopt_label()
+{
+    case "$label" in
+        g|gpt|G|GPT) label=gpt;;
+        m|msdos|M|MSDOS) label=msdos;;
+        *) echo_error "unsupported partition label: $label" && exit;;
+    esac
+
+    if [[ $label == "gpt" && $boot != "uefi" ]]; then
+        echo_error "UEFI must be used with a GPT label" && exit;;
+    fi
+}
+
+#
+# Verify cli arguments
+#
 options=$(getopt -o $short_opts -l $long_opts -- "$@")
 if [[ $? -ne 0 ]]; then
     echo_error "invalid options"
@@ -93,8 +114,9 @@ fi
 eval set -- "$options"
 while true; do
     case "$1" in
-        -p|--partition-table) table="$2";;
-        -f|--filesystem) fs="$2";;
+        -b|--boot) boot="$2";;
+        -p|--part-label) label="$2";;
+        -f|--fs) fs="$2";;
         -c|--city) city="$2";;
         -n|--name) host="$2";;
         -d|--device) device="/dev/$2";;
@@ -105,14 +127,11 @@ while true; do
     shift 2
 done
 
-case "$table" in
-    gpt|GPT) table=gpt;;
-    msdos|MSDOS|DOS) table=msdos;;
-    *) echo_error "unsupported partition table: $table";;
-esac
+ckopt_boot
+ckopt_label
 
 #
-# Confirm installation parameters
+# Display banner
 #
 echo "  ___           _       _     _                   ";
 echo " / _ \         | |     | |   (_)                  ";
@@ -122,20 +141,24 @@ echo "| | | | | | (__| | | | | |___| | | | | |_| |>  <  ";
 echo "\_| |_/_|  \___|_| |_| \_____/_|_| |_|\__,_/_/\_\ ";
 echo "                                                  ";
 
+#
+# Confirm installation parameters
+#
 echo_bold_cyan "Installation Parameters:"
 echo -n "  - rootfs device: " && echo_bold_white "$device"
 echo -n "  - rootfs type: " && echo_bold_white "$fs"
-echo -n "  - rootfs partition table: " && echo_bold_white "$table"
-echo -n "  - city in current timezone: " && echo_bold_white "$city"
+echo -n "  - rootfs partition label: " && echo_bold_white "$label"
+echo -n "  - boot type: " && echo_bold_white "$boot"
+echo -n "  - timezone city: " && echo_bold_white "$city"
 echo -n "  - hostname: " && echo_bold_white "$host"
 
 echo -ne "$bold_yellow"
-echo -ne "Format $device with new $table? [y/n]: $reset"
+echo -ne "Format $device with new $label? [y/n]: $reset"
 read -N 1 format
 echo ""
 
 if [[ $format != "y" ]]; then
-    echo_bold_white "Format cancelled! Exiting..."
+    echo_bold_white "Format cancelled...exiting"
     exit 1
 fi
 
@@ -145,24 +168,53 @@ timedatectl set-ntp true
 #
 # Format the device
 #
-echo "-> Formatting $device with $table"
-parted -s $device mklabel $table
+echo "-> Formatting $device with $label"
+parted -s $device mklabel $label
 
-echo -n "-> Creating new partition: "
 begin="2MiB"
+end="512MiB"
+parted -s $device mkpart primary $begin $end
+parted -s $device set 1 boot on
+
+begin=$end
 end="100%"
-parted -s $device mkpart primary $fs $begin $end
-partition=$(lsblk -lp | grep $device | head -2 | tail -1 | awk '{print $1}')
-echo "$partition"
+parted -s $device mkpart primary $begin $end
+parted -s $device set 2 root on
 
 #
-# Create and mount the filesystem
+# Create and mount filesystems
 #
-echo "-> Creating the root $fs filesystem on $partition"
-mkfs.$fs $partition
+case $boot in
+msdos)
+    local part=$(lsblk -lpo NAME | grep $device | head -2 | tail -1)
 
-echo "-> Mounting $partition onto /mnt"
-mount $partition /mnt
+    echo "-> Creating the root $fs filesystem on $part"
+    mkfs.$fs $part
+
+    echo "-> Mounting $part onto /mnt"
+    mount $part /mnt
+    ;;
+uefi)
+    local boot_part=$(lsblk -lpo NAME | grep $device | head -2 | tail -1)
+    local root_part=$(lsblk -lpo NAME | grep $device | head -3 | tail -1)
+
+    echo "-> Creating the root $fs filesystem on $root_part"
+    mkfs.$fs $root_part
+
+    echo "-> Creating the boot vfat filesystem on $boot_part"
+    mkfs.vfat $boot_part
+
+    echo "-> Mounting $root_part onto /mnt"
+    mount $root_part /mnt
+
+    echo "-> Mounting $boot_part onto /mnt/boot"
+    mount $boot_part /mnt/boot
+    ;;
+*)
+    echo_error "invalid boot type: $boot"
+    exit
+    ;;
+esac
 
 #
 # Copy the root filesystem to /mnt
@@ -181,43 +233,4 @@ echo "-> Generating /etc/fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "-> Chrooting into the new system"
-arch-chroot /mnt /bin/bash
-
-echo "-> Configuring /etc/systemd/journald.conf"
-sed -i 's/Storage=volatile/#Storage=auto/' /etc/systemd/journald.conf
-
-echo "-> Removing presumptuous dhcpcd udev rules"
-rm /etc/udev/rules.d/81-dhcpcd.rules
-
-echo "-> Disabling archiso systemd services"
-systemctl disable pacman-init.service choose-mirror.service
-rm -r /etc/systemd/system/{choose-mirror.service,pacman-init.service}
-rm -r /etc/systemd/system/{etc-pacman.d-gnupg.mount,getty@tty1.service.d}
-rm /etc/systemd/scripts/choose-mirror
-
-echo "-> Removing archiso scripts"
-rm /etc/systemd/system/getty@tty1.serivice.d/autologin.conf
-rm /root/{.automated_script.sh,.zlogin}
-rm /etc/mkinitcpio-archiso.conf
-rm -r /etc/initcpio
-
-echo "-> Importing archlinux master keys"
-pacman-key --init
-pacman-key --populate archlinux
-
-echo "-> Setting /etc/localtime: $region/$city"
-ln -sf /usr/share/zoneinfo/$region/$city /etc/localtime
-
-echo "-> Setting the hardware clock"
-hwclock --systohc
-
-echo "-> Setting locale"
-sed -i 's/#en_US\.UTF-8/en_US.UTF-8/' /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 > /etc/locale.conf
-
-echo "-> Setting /etc/hostname: $host"
-echo $host > /etc/hostname
-
-
-# TODO: networking and booting
+arch-chroot /mnt /root/sysinit-chroot
