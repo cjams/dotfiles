@@ -1,18 +1,21 @@
 #!/bin/bash
+set -e
 
 reset="\e[0m"
 bold="\e[1m"
-red="\e[31m"
-green="\e[32m"
-yellow="\e[33m"
-cyan="\e[36m"
-white="\e[97m"
+red="\e[91m"
+green="\e[92m"
+yellow="\e[93m"
+blue="\e[94m"
+cyan="\e[96m"
+white="\e[99m"
 
-bold_red="\e[1;31m"
-bold_green="\e[1;32m"
-bold_yellow="\e[1;33m"
-bold_cyan="\e[1;36m"
-bold_white="\e[1;39m"
+bold_red="\e[1;91m"
+bold_green="\e[1;92m"
+bold_yellow="\e[1;93m"
+bold_blue="\e[1;94m"
+bold_cyan="\e[1;96m"
+bold_white="\e[1;99m"
 
 echo_bold_red()
 {
@@ -46,7 +49,17 @@ echo_error()
     exit 1
 }
 
-device=""
+echo_milestone()
+{
+    echo -e "$bold_green==>$reset $bold_white$1$reset"
+}
+
+echo_task()
+{
+    echo -e "  $bold_cyan->$reset $bold_white$1$reset"
+}
+
+dev=""
 city="Chicago"
 boot="bios"
 host="dev"
@@ -55,7 +68,7 @@ fs="ext4"
 region="America"
 
 short_opts="b:d:p:f:c:n:h"
-long_opts="boot:,disk:,part-label:,fs:,city:,name:,help,uefi"
+long_opts="boot:,disk:,part-label:,fs:,city:,name:,help"
 
 echo_usage()
 {
@@ -67,11 +80,12 @@ echo_usage()
     echo "  for the root filesystem. The device will be formatted with a new"
     echo "  partition label and filesystem. If <boot> is uefi, then a FAT"
     echo "  partition /boot will be made for the EFI partition. Otherwise, "
-    echo "  only one partition, /, will be created."
+    echo "  only one partition for / will be created."
     echo ""
     echo "Options:"
     echo "  -b, --boot         uefi | bios (default: $boot)"
     echo "  -p, --part-label   gpt | msdos (default: $label)"
+    echo "  -d, --disk         parition /dev/<disk>"
     echo "  -f, --fs           flesystem type (default: $fs)"
     echo "  -c, --city         city for timezone (default: $city)"
     echo "  -n, --name         hostname (default: $host)"
@@ -83,8 +97,8 @@ ckopt_boot()
 {
     case "$boot" in
         u|uefi|U|UEFI) boot=uefi;;
-        b|bios|B|BIOS) boot=msdos;;
-        *) echo_error "unsupported boot type: $boot" && exit;;
+        b|bios|B|BIOS) boot=bios;;
+        *) echo_error "unsupported boot type: $boot" && exit
     esac
 }
 
@@ -97,13 +111,19 @@ ckopt_label()
     esac
 
     if [[ $label == "gpt" && $boot != "uefi" ]]; then
-        echo_error "UEFI must be used with a GPT label" && exit;;
+        echo_error "UEFI must be used with a GPT label" && exit
     fi
 }
 
 #
-# Verify cli arguments
+# Verify arguments
 #
+if [[ $# -lt 4 ]]; then
+    echo_error "Too few arguments"
+    echo_usage
+    exit
+fi
+
 options=$(getopt -o $short_opts -l $long_opts -- "$@")
 if [[ $? -ne 0 ]]; then
     echo_error "invalid options"
@@ -119,7 +139,7 @@ while true; do
         -f|--fs) fs="$2";;
         -c|--city) city="$2";;
         -n|--name) host="$2";;
-        -d|--device) device="/dev/$2";;
+        -d|--disk) dev="/dev/$2";;
         -h|--help) echo_usage && exit;;
         --) break;;
         *) echo_error "unknown option: $1";;
@@ -144,8 +164,8 @@ echo "                                                  ";
 #
 # Confirm installation parameters
 #
-echo_bold_cyan "Installation Parameters:"
-echo -n "  - rootfs device: " && echo_bold_white "$device"
+echo_bold_green "Installation Parameters:"
+echo -n "  - rootfs device: " && echo_bold_white "$dev"
 echo -n "  - rootfs type: " && echo_bold_white "$fs"
 echo -n "  - rootfs partition label: " && echo_bold_white "$label"
 echo -n "  - boot type: " && echo_bold_white "$boot"
@@ -153,7 +173,7 @@ echo -n "  - timezone city: " && echo_bold_white "$city"
 echo -n "  - hostname: " && echo_bold_white "$host"
 
 echo -ne "$bold_yellow"
-echo -ne "Format $device with new $label? [y/n]: $reset"
+echo -ne "Format $dev with new $label? [y/n]: $reset"
 read -N 1 format
 echo ""
 
@@ -162,75 +182,63 @@ if [[ $format != "y" ]]; then
     exit 1
 fi
 
-echo "-> Updating the system clock"
+echo_milestone "Updating the system clock"
 timedatectl set-ntp true
 
 #
 # Format the device
 #
-echo "-> Formatting $device with $label"
-parted -s $device mklabel $label
+echo_milestone "Formatting $dev with $label"
+wipefs --quiet --all $dev
+parted -s $dev mklabel $label
 
 begin="2MiB"
 end="512MiB"
-parted -s $device mkpart primary $begin $end
-parted -s $device set 1 boot on
+parted -s $dev mkpart primary $begin $end
+parted -s $dev set 1 boot on
 
 begin=$end
 end="100%"
-parted -s $device mkpart primary $begin $end
-parted -s $device set 2 root on
+parted -s $dev mkpart primary $begin $end
+
+boot_part=$(lsblk -lpo NAME | grep $dev | head -2 | tail -1)
+boot_size=$(lsblk -lpo SIZE | grep $dev | head -2 | tail -1)
+echo_task "Created $boot_size /boot partition: $boot_part"
+
+root_part=$(lsblk -lpo NAME | grep $dev | head -3 | tail -1)
+root_size=$(lsblk -lpo SIZE | grep $dev | head -3 | tail -1)
+echo_task "Created $root_size /     partition: $root_part"
 
 #
-# Create and mount filesystems
+# Make and mount the filesystems
 #
-case $boot in
-msdos)
-    local part=$(lsblk -lpo NAME | grep $device | head -2 | tail -1)
+echo_task "Making the $fs root fs on $root_part"
+mkfs.$fs -q $root_part
 
-    echo "-> Creating the root $fs filesystem on $part"
-    mkfs.$fs $part
+echo_task "Making the vfat boot fs on $boot_part"
+mkfs.vfat -q $boot_part
 
-    echo "-> Mounting $part onto /mnt"
-    mount $part /mnt
-    ;;
-uefi)
-    local boot_part=$(lsblk -lpo NAME | grep $device | head -2 | tail -1)
-    local root_part=$(lsblk -lpo NAME | grep $device | head -3 | tail -1)
+mount $root_part /mnt
+mkdir /mnt/boot
+echo_task "Mounted $root_part onto /mnt"
 
-    echo "-> Creating the root $fs filesystem on $root_part"
-    mkfs.$fs $root_part
-
-    echo "-> Creating the boot vfat filesystem on $boot_part"
-    mkfs.vfat $boot_part
-
-    echo "-> Mounting $root_part onto /mnt"
-    mount $root_part /mnt
-
-    echo "-> Mounting $boot_part onto /mnt/boot"
-    mount $boot_part /mnt/boot
-    ;;
-*)
-    echo_error "invalid boot type: $boot"
-    exit
-    ;;
-esac
+mount $boot_part /mnt/boot
+echo_task "Mounted $boot_part onto /mnt/boot"
 
 #
 # Copy the root filesystem to /mnt
 #
-echo -n "-> Copying the archiso to /mnt..."
+echo_milestone "Installing the root fs to the new root"
+echo_task "Copying the archiso to /mnt..."
 cp -ax / /mnt
-echo "done"
 
-echo -n "-> Copying the kernel to /mnt/boot..."
+echo_task "Copying the kernel to /mnt/boot..."
 cp -aT \
     /run/archiso/bootmnt/arch/boot/$(uname -m)/vmlinuz \
     /mnt/boot/vmlinuz-linux
-echo "done"
 
-echo "-> Generating /etc/fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
+echo_task "Generated /mnt/etc/fstab"
 
-echo "-> Chrooting into the new system"
-arch-chroot /mnt /root/sysinit-chroot
+echo_milestone "Chrooting into the new system..."
+arch-chroot /mnt /root/sysinit-chroot $region $city $host
