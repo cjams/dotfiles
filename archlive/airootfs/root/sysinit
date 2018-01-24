@@ -63,12 +63,13 @@ dev=""
 city="Chicago"
 boot="bios"
 host="dev"
+user="dev"
 label="msdos"
 fs="ext4"
 region="America"
 
-short_opts="b:d:p:f:c:n:h"
-long_opts="boot:,disk:,part-label:,fs:,city:,name:,help"
+short_opts="b:d:p:f:c:n:u:h"
+long_opts="boot:,disk:,part-label:,fs:,city:,name:,user:,help"
 
 echo_usage()
 {
@@ -76,19 +77,26 @@ echo_usage()
     echo "  sysinit -b | --boot <boot> -d | --disk <disk> [options]"
     echo ""
     echo "Overview:"
-    echo "  Initialize the Arch Linux system using /dev/<disk> as the device"
+    echo "  Install the Arch Linux system using /dev/<disk> as the device"
     echo "  for the root filesystem. The device will be formatted with a new"
-    echo "  partition label and filesystem. If <boot> is uefi, then a FAT"
-    echo "  partition /boot will be made for the EFI partition. Otherwise, "
-    echo "  only one partition for / will be created."
+    echo "  partition label and filesystems. Two partitions will be created,"
+    echo "  one for / and one for /boot. The filesystem for / may be configured"
+    echo "  if the user doesn't want to use the default ext4."
+    echo ""
+    echo "  You may create a non-root user by supplying the name to the -u"
+    echo "  option. This will create a user with the supplied name, and the "
+    echo "  user will be added to the wheel group to enable sudo powers. Both"
+    echo "  The root and non-root user will need to have their passwords set"
+    echo "  after the installation if desired (see man passwd)."
     echo ""
     echo "Options:"
     echo "  -b, --boot         uefi | bios (default: $boot)"
     echo "  -p, --part-label   gpt | msdos (default: $label)"
     echo "  -d, --disk         parition /dev/<disk>"
-    echo "  -f, --fs           flesystem type (default: $fs)"
+    echo "  -f, --fs           / flesystem type (default: $fs)"
     echo "  -c, --city         city for timezone (default: $city)"
     echo "  -n, --name         hostname (default: $host)"
+    echo "  -u, --user         user name (default: $user)"
     echo "  -h, --help         print this help"
     echo ""
 }
@@ -139,6 +147,7 @@ while true; do
         -f|--fs) fs="$2";;
         -c|--city) city="$2";;
         -n|--name) host="$2";;
+        -u|--user) user="$2";;
         -d|--disk) dev="/dev/$2";;
         -h|--help) echo_usage && exit;;
         --) break;;
@@ -165,12 +174,13 @@ echo "                                                  ";
 # Confirm installation parameters
 #
 echo_bold_green "Installation Parameters:"
+echo -n "  - rootfs partition label: " && echo_bold_white "$label"
 echo -n "  - rootfs device: " && echo_bold_white "$dev"
 echo -n "  - rootfs type: " && echo_bold_white "$fs"
-echo -n "  - rootfs partition label: " && echo_bold_white "$label"
 echo -n "  - boot type: " && echo_bold_white "$boot"
+echo -n "  - host name: " && echo_bold_white "$host"
+echo -n "  - user name: " && echo_bold_white "$user"
 echo -n "  - timezone city: " && echo_bold_white "$city"
-echo -n "  - hostname: " && echo_bold_white "$host"
 
 echo -ne "$bold_yellow"
 echo -ne "Format $dev with new $label? [y/n]: $reset"
@@ -216,7 +226,7 @@ echo_task "Making the $fs root fs on $root_part"
 mkfs.$fs -q $root_part
 
 echo_task "Making the vfat boot fs on $boot_part"
-mkfs.vfat -q $boot_part
+mkfs.vfat $boot_part
 
 mount $root_part /mnt
 mkdir /mnt/boot
@@ -241,4 +251,4 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo_task "Generated /mnt/etc/fstab"
 
 echo_milestone "Chrooting into the new system..."
-arch-chroot /mnt /root/sysinit-chroot $region $city $host
+arch-chroot /mnt /root/sysinit-chroot $region $city $host $user

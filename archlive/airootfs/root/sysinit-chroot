@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+#
+# NOTE: this should only be called by sysinit
+#
+
+
 reset="\e[0m"
 bold="\e[1m"
 bold_green="\e[1;92m"
@@ -23,6 +28,7 @@ echo_task()
 region=$1
 city=$2
 host=$3
+user=$4
 
 #
 # From this point on, we are arch-chrooted into the new system
@@ -63,5 +69,7 @@ echo_task "Setting the hardware clock"
 hwclock --systohc
 
 echo_milestone "Configuring network"
-echo_task "Setting /etc/hostname: $host"
 echo $host > /etc/hostname
+
+echo_milestone "Configuring $user's account"
+useradd -G wheel -U -m $user
