@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 sudo pacman -Syu --needed --noconfirm
 sudo pacman -S clang cmake linux-headers nasm ninja --needed --noconfirm

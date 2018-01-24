@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 dir=$HOME/dotfiles
 git clone https://github.com/connojd/dotfiles.git $dir
