@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+if [[ $# -ne 1 ]]; then
+    echo "usage: setup.sh <github user name>"
+    exit 1
+fi
+
+ghub_user=$1
+
 dir="$HOME/dotfiles"
 
 rm -rf $HOME/.config/fish
@@ -29,6 +36,13 @@ pushd bundle/LeaderF
 
 popd
 popd
+
+if [ ! -e $HOME/.ssh/id_rsa.pub ]; then
+	ssh-keygen
+	git clone https://github.com/b4b4r07/ssh-keyreg.git
+	./ssh-keyreg/bin/ssh-keyreg -u $ghub_user github
+        rm -rf ssh-keyreg
+fi
 
 sudo cp -v $dir/linux/perf.conf /etc/sysctl.d/perf.conf
 sudo sysctl -p /etc/sysctl.d/perf.conf
