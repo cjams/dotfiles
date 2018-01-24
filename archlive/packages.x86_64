@@ -5,7 +5,6 @@ vim
 git
 openssh
 wget
-bash
 linux
 linux-headers
 linux-docs
@@ -33,3 +32,4 @@ bridge-utils
 dnsmasq
 ebtables
 iptables
+gptfdisk

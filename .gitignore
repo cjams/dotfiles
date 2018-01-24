@@ -26,3 +26,15 @@ config/fish/completions/spin.fish
 config/fish/completions/gitignore.fish
 config/fish/conf.d/z.fish
 config/fish/conf.d/ssh-agent.init.fish
+
+work
+out
+packages.both
+packages.i686
+build.sh
+efiboot
+isolinux
+syslinux
+airootfs/root/install.txt
+airootfs/root/.automated_script.sh
+airootfs/root/.zlogin
