@@ -8,8 +8,6 @@ echo FONT=ter-124n >> /etc/vconsole.conf
 cp -aT /etc/skel/ /root/
 chmod 700 /root
 
-useradd -G wheel -U -m dev
-
 echo 'root ALL=(ALL) ALL' > /etc/sudoers
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 chown -c root:root /etc/sudoers
