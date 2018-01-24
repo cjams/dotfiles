@@ -24,7 +24,7 @@ ln -sfv $dir/vimrc $HOME/.vimrc
 
 sudo pacman -Syu --noconfirm
 sudo pacman -S python ctags fish git openssh vim --needed
-sudo pacman -S asp the_silver_searcher --needed
+sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
 sudo pacman -S linux-headers linux-tools --needed
 
 pushd $HOME/.vim
