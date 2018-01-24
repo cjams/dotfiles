@@ -41,7 +41,7 @@ function fish_prompt --description 'Write out the prompt'
     end
 
     if not set -q __fish_git_prompt_color_dirtystate
-        set -g __fish_git_prompt_color_dirtystate cyan
+        set -g __fish_git_prompt_color_dirtystate green
     end
     if not set -q __fish_git_prompt_color_stagedstate
         set -g __fish_git_prompt_color_stagedstate yellow
