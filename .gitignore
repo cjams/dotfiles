@@ -29,8 +29,6 @@ config/fish/conf.d/ssh-agent.init.fish
 
 work
 out
-packages.both
-packages.i686
 build.sh
 efiboot
 isolinux
