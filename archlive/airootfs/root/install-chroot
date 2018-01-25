@@ -29,6 +29,8 @@ region=$1
 city=$2
 host=$3
 user=$4
+boot=$5
+boot_dev=$6
 
 #
 # From this point on, we are arch-chrooted into the new system
@@ -73,3 +75,24 @@ echo $host > /etc/hostname
 
 echo_milestone "Configuring $user's account"
 useradd -G wheel -U -m $user
+
+echo_milestone "Generating initramfs"
+mkinitcpio -p linux
+
+echo_milestone "Installing GRUB"
+case $boot in
+uefi)
+    echo_task "Targeting UEFI"
+    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+    ;;
+bios)
+    echo_task "Targeting BIOS"
+    grub-install --target=i386-pc $boot_dev
+    ;;
+*)
+    echo "ERROR: unknown boot value: $boot"
+    exit
+esac
+
+echo_task "Configuring GRUB"
+grub-mkconfig -o /boot/grub/grub.cfg

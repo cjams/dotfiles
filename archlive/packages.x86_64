@@ -33,3 +33,4 @@ dnsmasq
 ebtables
 iptables
 gptfdisk
+efibootmgr

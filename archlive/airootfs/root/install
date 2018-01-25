@@ -251,4 +251,4 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo_task "Generated /mnt/etc/fstab"
 
 echo_milestone "Chrooting into the new system..."
-arch-chroot /mnt /root/install-chroot $region $city $host $user
+arch-chroot /mnt /root/install-chroot $region $city $host $user $boot $dev
