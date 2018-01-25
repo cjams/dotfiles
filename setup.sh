@@ -24,9 +24,10 @@ ln -sfv $dir/vim $HOME/.vim
 ln -sfv $dir/vimrc $HOME/.vimrc
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S asp the_silver_searcher tmon --needed
-sudo pacman -S linux-headers libtraceevent perf --needed
-sudo pacman -S python ctags fish git openssh vim --needed
+sudo pacman -S python ctags fish git openssh vim tree --needed
+sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
+sudo pacman -S linux-headers libtraceevent perf x86_energy_perf_policy --needed
+sudo pacman -S cpupower turbostat usbip tmon --needed
 
 cd $HOME/aur
 git clone https://aur.archlinux.org/package-query.git

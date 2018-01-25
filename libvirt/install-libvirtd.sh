@@ -1,7 +1,12 @@
 #!/bin/bash
 
+if [ $EUID -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
 sudo pacman -S --noconfirm --needed libvirt ebtables dnsmasq qemu
-sudo pacman -S --noconfirm --needed bridge-utils openbsd-netcat
+sudo pacman -S --noconfirm --needed bridge-utils openbsd-netcat virt-manager
 
 # Don't do this on the open net :0
 sed -i 's/#auth_unix_ro =.*/auth_unix_ro = "none"/' /etc/libvirt/libvirtd.conf

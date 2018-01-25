@@ -29,10 +29,3 @@ config/fish/conf.d/ssh-agent.init.fish
 
 work
 out
-build.sh
-efiboot
-isolinux
-syslinux
-airootfs/root/install.txt
-airootfs/root/.automated_script.sh
-airootfs/root/.zlogin
