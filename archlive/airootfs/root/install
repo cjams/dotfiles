@@ -60,7 +60,7 @@ echo_task()
 }
 
 dev=""
-city="Chicago"
+city="Denver"
 boot="bios"
 host="dev"
 user="dev"
@@ -74,7 +74,7 @@ long_opts="boot:,disk:,part-label:,fs:,city:,name:,user:,help"
 echo_usage()
 {
     echo "Usage:"
-    echo "  sysinit -b | --boot <boot> -d | --disk <disk> [options]"
+    echo "  install -b | --boot <boot> -d | --disk <disk> [options]"
     echo ""
     echo "Overview:"
     echo "  Install the Arch Linux system using /dev/<disk> as the device"
@@ -251,4 +251,4 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo_task "Generated /mnt/etc/fstab"
 
 echo_milestone "Chrooting into the new system..."
-arch-chroot /mnt /root/sysinit-chroot $region $city $host $user
+arch-chroot /mnt /root/install-chroot $region $city $host $user

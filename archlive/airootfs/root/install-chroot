@@ -2,7 +2,7 @@
 set -e
 
 #
-# NOTE: this should only be called by sysinit
+# NOTE: this should only be called by install
 #
 
 
@@ -23,7 +23,7 @@ echo_task()
 }
 
 #
-# Args passed from sysinit
+# Args passed from install
 #
 region=$1
 city=$2
@@ -68,7 +68,7 @@ ln -sf /usr/share/zoneinfo/$region/$city /etc/localtime
 echo_task "Setting the hardware clock"
 hwclock --systohc
 
-echo_milestone "Configuring network"
+echo_milestone "Setting hostname"
 echo $host > /etc/hostname
 
 echo_milestone "Configuring $user's account"
