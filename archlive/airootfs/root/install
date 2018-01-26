@@ -56,7 +56,7 @@ echo_milestone()
 
 echo_task()
 {
-    echo -e "  $bold_cyan->$reset $bold_white$1$reset"
+    echo -e "  $bold_blue->$reset $bold_white$1$reset"
 }
 
 dev=""
@@ -64,35 +64,37 @@ city="Denver"
 boot="bios"
 host="dev"
 user="dev"
-label="msdos"
+table="msdos"
 fs="ext4"
 region="America"
 
 short_opts="b:d:p:f:c:n:u:h"
-long_opts="boot:,disk:,part-label:,fs:,city:,name:,user:,help"
+long_opts="boot:,disk:,part-table:,fs:,city:,name:,user:,help"
 
 echo_usage()
 {
-    echo "Usage:"
-    echo "  install -b | --boot <boot> -d | --disk <disk> [options]"
+    echo -n -e "$bold_white"
+    echo -e "Usage:$reset"
+    echo "  install -d | --disk <disk> [options]"
     echo ""
-    echo "Overview:"
+    echo -n -e "$bold_white"
+    echo -e "Overview:$reset"
     echo "  Install the Arch Linux system using /dev/<disk> as the device"
     echo "  for the root filesystem. The device will be formatted with a new"
-    echo "  partition label and filesystems. Two partitions will be created,"
+    echo "  partition table and filesystems. Two partitions will be created,"
     echo "  one for / and one for /boot. The filesystem for / may be configured"
     echo "  if the user doesn't want to use the default ext4."
     echo ""
     echo "  You may create a non-root user by supplying the name to the -u"
     echo "  option. This will create a user with the supplied name, and the "
     echo "  user will be added to the wheel group to enable sudo powers. Both"
-    echo "  The root and non-root user will need to have their passwords set"
+    echo "  the root and non-root user will need to have their passwords set"
     echo "  after the installation if desired (see man passwd)."
     echo ""
-    echo "Options:"
+    echo -n -e "$bold_white"
+    echo -e "Options:$reset"
     echo "  -b, --boot         uefi | bios (default: $boot)"
-    echo "  -p, --part-label   gpt | msdos (default: $label)"
-    echo "  -d, --disk         parition /dev/<disk>"
+    echo "  -p, --part-table   gpt | msdos (default: $table)"
     echo "  -f, --fs           / flesystem type (default: $fs)"
     echo "  -c, --city         city for timezone (default: $city)"
     echo "  -n, --name         hostname (default: $host)"
@@ -110,23 +112,23 @@ ckopt_boot()
     esac
 }
 
-ckopt_label()
+ckopt_table()
 {
-    case "$label" in
-        g|gpt|G|GPT) label=gpt;;
-        m|msdos|M|MSDOS) label=msdos;;
-        *) echo_error "unsupported partition label: $label" && exit;;
+    case "$table" in
+        g|gpt|G|GPT) table=gpt;;
+        m|msdos|M|MSDOS) table=msdos;;
+        *) echo_error "unsupported partition table: $table" && exit;;
     esac
 
-    if [[ $label == "gpt" && $boot != "uefi" ]]; then
-        echo_error "UEFI must be used with a GPT label" && exit
+    if [[ $table == "gpt" && $boot != "uefi" ]]; then
+        echo_error "UEFI must be used with a GPT table" && exit
     fi
 }
 
 #
 # Verify arguments
 #
-if [[ $# -lt 4 ]]; then
+if [[ $# -lt 2 ]]; then
     echo_error "Too few arguments"
     echo_usage
     exit
@@ -134,7 +136,7 @@ fi
 
 options=$(getopt -o $short_opts -l $long_opts -- "$@")
 if [[ $? -ne 0 ]]; then
-    echo_error "invalid options"
+    echo_error "Invalid options"
     echo_usage
     exit 1
 fi
@@ -143,7 +145,7 @@ eval set -- "$options"
 while true; do
     case "$1" in
         -b|--boot) boot="$2";;
-        -p|--part-label) label="$2";;
+        -p|--part-table) table="$2";;
         -f|--fs) fs="$2";;
         -c|--city) city="$2";;
         -n|--name) host="$2";;
@@ -157,7 +159,7 @@ while true; do
 done
 
 ckopt_boot
-ckopt_label
+ckopt_table
 
 #
 # Display banner
@@ -174,7 +176,7 @@ echo "                                                  ";
 # Confirm installation parameters
 #
 echo_bold_green "Installation Parameters:"
-echo -n "  - rootfs partition label: " && echo_bold_white "$label"
+echo -n "  - rootfs partition table: " && echo_bold_white "$table"
 echo -n "  - rootfs device: " && echo_bold_white "$dev"
 echo -n "  - rootfs type: " && echo_bold_white "$fs"
 echo -n "  - boot type: " && echo_bold_white "$boot"
@@ -183,7 +185,7 @@ echo -n "  - user name: " && echo_bold_white "$user"
 echo -n "  - timezone city: " && echo_bold_white "$city"
 
 echo -ne "$bold_yellow"
-echo -ne "Format $dev with new $label? [y/n]: $reset"
+echo -ne "Format $dev with new $table? [y/n]: $reset"
 read -N 1 format
 echo ""
 
@@ -198,9 +200,9 @@ timedatectl set-ntp true
 #
 # Format the device
 #
-echo_milestone "Formatting $dev with $label"
+echo_milestone "Formatting $dev with new $table partition table"
 wipefs --quiet --all $dev
-parted -s $dev mklabel $label
+parted -s $dev mklabel $table
 
 begin="2MiB"
 end="512MiB"
@@ -222,10 +224,10 @@ echo_task "Created $root_size /     partition: $root_part"
 #
 # Make and mount the filesystems
 #
-echo_task "Making the $fs root fs on $root_part"
+echo_task "Making the $fs / fs on $root_part"
 mkfs.$fs -q $root_part
 
-echo_task "Making the vfat boot fs on $boot_part"
+echo_task "Making the vfat /boot fs on $boot_part"
 mkfs.vfat $boot_part
 
 mount $root_part /mnt
@@ -238,7 +240,7 @@ echo_task "Mounted $boot_part onto /mnt/boot"
 #
 # Copy the root filesystem to /mnt
 #
-echo_milestone "Installing the root fs to the new root"
+echo_milestone "Installing the archiso to the new root"
 echo_task "Copying the archiso to /mnt..."
 cp -ax / /mnt
 
@@ -251,4 +253,4 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo_task "Generated /mnt/etc/fstab"
 
 echo_milestone "Chrooting into the new system..."
-arch-chroot /mnt /root/install-chroot $region $city $host $user $boot $dev
+arch-chroot /mnt /root/chroot-install $region $city $host $user $boot $dev

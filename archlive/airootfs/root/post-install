@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage: post-install <user-name>"
+    exit 1
+fi
+
+user=$1
+
+#
+# Download $user dotfiles
+#
+git clone https://github.com/connojd/dotfiles.git /home/$user/dotfiles

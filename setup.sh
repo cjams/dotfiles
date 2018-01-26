@@ -2,7 +2,7 @@
 set -e
 
 if [[ $# -ne 1 ]]; then
-    echo "usage: setup.sh <github user name>"
+    echo "Usage: setup.sh <github user name>"
     exit 1
 fi
 
@@ -16,6 +16,7 @@ rm -rf $HOME/.vim
 rm -rf $HOME/.vimrc
 
 mkdir -pv $HOME/.config
+mkdir -pv $HOME/aur
 
 ln -sfv $dir/config/fish $HOME/.config/fish
 ln -sfv $dir/gitconfig $HOME/.gitconfig
@@ -23,20 +24,28 @@ ln -sfv $dir/vim $HOME/.vim
 ln -sfv $dir/vimrc $HOME/.vimrc
 
 sudo pacman -Syu --noconfirm
+sudo pacman -S asp the_silver_searcher tmon --needed
+sudo pacman -S linux-headers libtraceevent perf --needed
 sudo pacman -S python ctags fish git openssh vim --needed
-sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
-sudo pacman -S linux-headers libtraceevent perf x86_energy_perf_policy --needed
-sudo pacman -S cpupower turbostat usbip tmon --needed
 
-pushd $HOME/.vim
+cd $HOME/aur
+git clone https://aur.archlinux.org/package-query.git
+git clone https://aur.archlinux.org/yaourt.git
+
+cd $HOME/aur/package-query
+makepkg -i -s --noconfirm --needed
+
+cd $HOME/aur/yaourt
+makepkg -i -s --noconfirm --needed
+
+cd $HOME/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
 vim +PluginInstall +qall
 
-pushd bundle/LeaderF
+cd $HOME/.vim/bundle/LeaderF
 ./install.sh
 
-popd
-popd
+cd $HOME
 
 if [ ! -e $HOME/.ssh/id_rsa.pub ]; then
 	ssh-keygen

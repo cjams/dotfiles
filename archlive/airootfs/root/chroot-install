@@ -10,6 +10,7 @@ reset="\e[0m"
 bold="\e[1m"
 bold_green="\e[1;92m"
 bold_cyan="\e[1;96m"
+bold_blue="\e[1;94m"
 bold_white="\e[1;99m"
 
 echo_milestone()
@@ -19,7 +20,7 @@ echo_milestone()
 
 echo_task()
 {
-    echo -e "  $bold_cyan->$reset $bold_white$1$reset"
+    echo -e "  $bold_blue->$reset $bold_white$1$reset"
 }
 
 #
@@ -38,9 +39,6 @@ boot_dev=$6
 echo_milestone "Cleaning up artifacts from the live environment"
 echo_task "Configuring /etc/systemd/journald.conf"
 sed -i 's/Storage=volatile/#Storage=auto/' /etc/systemd/journald.conf
-
-echo_task "Removing presumptuous dhcpcd udev rules"
-rm -f /etc/udev/rules.d/81-dhcpcd.rules
 
 echo_task "Disabling archiso systemd services"
 systemctl disable pacman-init.service choose-mirror.service > /dev/null
@@ -70,23 +68,30 @@ ln -sf /usr/share/zoneinfo/$region/$city /etc/localtime
 echo_task "Setting the hardware clock"
 hwclock --systohc
 
-echo_milestone "Setting hostname"
+echo_milestone "Initializing network"
+echo_task "Setting hostname"
 echo $host > /etc/hostname
 
-echo_milestone "Configuring $user's account"
-useradd -G wheel -U -m $user
+echo_task "Starting dhcpc daemon"
+systemctl start dhcpcd
+systemctl enable dhcpcd
+
+echo_task "Starting ssh daemon"
+systemctl start sshd
+systemctl enable sshd
 
 echo_milestone "Generating initramfs"
 mkinitcpio -p linux
 
-echo_milestone "Installing GRUB"
 case $boot in
 uefi)
-    echo_task "Targeting UEFI"
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+    echo_milestone "Install GRUB for UEFI"
+    grub-install --target=x86_64-efi \
+                 --efi-directory=/boot \
+                 --bootloader-id=grub
     ;;
 bios)
-    echo_task "Targeting BIOS"
+    echo_milestone "Targeting GRUB for BIOS"
     grub-install --target=i386-pc $boot_dev
     ;;
 *)
@@ -96,3 +101,10 @@ esac
 
 echo_task "Configuring GRUB"
 grub-mkconfig -o /boot/grub/grub.cfg
+
+echo_milestone "Configuring user accounts"
+echo_task "Adding new user: $user"
+useradd -G wheel -U -m $user
+
+echo_task "Running post-install hook"
+/root/post-install $user
