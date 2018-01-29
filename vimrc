@@ -15,6 +15,7 @@ Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
 Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'w0rp/ale'
 
 call vundle#end()
 filetype plugin indent on
@@ -33,9 +34,7 @@ set softtabstop=0
 set expandtab
 set shiftwidth=4
 set smarttab
-
-set colorcolumn=80
-highlight ColorColumn ctermbg=darkgray
+set makeprg=ninja
 
 " set grep program
 set grepprg=ag\ --vimgrep\ $*
@@ -115,6 +114,9 @@ nnoremap <leader>s :w<cr>
 " remap write then close
 nnoremap <leader>sd :wq<cr>
 
+" remap make
+nnoremap <leader>m :make<cr>
+
 " remap fugitive
 nnoremap <leader>gw :Gwrite
 nnoremap <leader>gr :Gread
@@ -122,9 +124,6 @@ nnoremap <leader>gm :Gmove
 nnoremap <leader>gc :Gcommit
 nnoremap <leader>gs :Gstatus
 nnoremap <leader>gd :Gdiff
-
- " remap ack
- nnoremap <leader>a :Ack<space>
 
  " goto file under cursor
  nnoremap gf :vertical wincmd f<cr>

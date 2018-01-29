@@ -27,17 +27,18 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S python ctags fish git openssh vim tree --needed
 sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
 sudo pacman -S linux-headers libtraceevent perf x86_energy_perf_policy --needed
-sudo pacman -S cpupower turbostat usbip tmon --needed
 
 cd $HOME/aur
 git clone https://aur.archlinux.org/package-query.git
 git clone https://aur.archlinux.org/yaourt.git
 
 cd $HOME/aur/package-query
-makepkg -i -s --noconfirm --needed
+makepkg -i -s --needed --noconfirm
 
 cd $HOME/aur/yaourt
-makepkg -i -s --noconfirm --needed
+makepkg -i -s --needed --noconfirm
+
+yaourt -S downgrade --needed --noconfirm
 
 cd $HOME/.vim
 git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim

@@ -34,3 +34,12 @@ ebtables
 iptables
 gptfdisk
 efibootmgr
+xorg-server
+xorg-xinit
+xorg-xprop
+xorg-xrandr
+xf86-video-fbdev
+xf86-video-intel
+mesa
+compton
+i3
