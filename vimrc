@@ -46,13 +46,7 @@ else
     colorscheme slate
 endif
 
-fun! <SID>strip_trailing_whitespace()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
+autocmd BufWritePre *.c *.cpp *.h *.asm %s/\s\+$//e
 
 let g:lsp_async_completion=1
 if (executable('clangd'))
@@ -62,6 +56,11 @@ if (executable('clangd'))
         \ 'whitelist': ['c', 'cpp', 'h']
         \ })
 endif
+
+let g:ale_fixers = {
+        \ 'c': ['clang-format'],
+        \ 'cpp': ['clang-format']
+\ }
 
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
