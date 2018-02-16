@@ -46,7 +46,13 @@ else
     colorscheme slate
 endif
 
-autocmd BufWritePre *.c *.cpp *.h *.asm %s/\s\+$//e
+fun! <SID>strip_trailing_whitespace()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
 
 let g:lsp_async_completion=1
 if (executable('clangd'))
