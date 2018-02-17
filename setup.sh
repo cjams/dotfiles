@@ -18,19 +18,26 @@ rm -rf $HOME/.vimrc
 mkdir -pv $HOME/.config
 mkdir -pv $HOME/aur
 
-ln -sfv $dir/config/fish $HOME/.config/fish
-ln -sfv $dir/gitconfig $HOME/.gitconfig
-ln -sfv $dir/vim $HOME/.vim
-ln -sfv $dir/vimrc $HOME/.vimrc
+ln -fsv $dir/config/fish $HOME/.config/fish
+ln -fsv $dir/gitconfig $HOME/.gitconfig
+ln -fsv $dir/vim $HOME/.vim
+ln -fsv $dir/vimrc $HOME/.vimrc
 
 sudo pacman -Syu --noconfirm
 sudo pacman -S python ctags fish git openssh vim tree --needed
 sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
-sudo pacman -S linux-headers libtraceevent perf x86_energy_perf_policy --needed
+sudo pacman -S linux-headers libtraceevent perf --needed
 
 cd $HOME/aur
-git clone https://aur.archlinux.org/package-query.git
-git clone https://aur.archlinux.org/yaourt.git
+if [ ! -d package-query ];
+then
+    git clone https://aur.archlinux.org/package-query.git
+fi
+
+if [ ! -d yaourt ];
+then
+    git clone https://aur.archlinux.org/yaourt.git
+fi
 
 cd $HOME/aur/package-query
 makepkg -i -s --needed --noconfirm
@@ -48,7 +55,6 @@ cd $HOME/.vim/bundle/LeaderF
 ./install.sh
 
 cd $HOME
-
 if [ ! -e $HOME/.ssh/id_rsa.pub ]; then
 	ssh-keygen
 	git clone https://github.com/b4b4r07/ssh-keyreg.git
