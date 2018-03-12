@@ -15,7 +15,9 @@ Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
 Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
-Plugin 'w0rp/ale'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'c.vim'
+Plugin 'majutsushi/tagbar'
 
 call vundle#end()
 filetype plugin indent on
@@ -50,6 +52,7 @@ fun! <SID>strip_trailing_whitespace()
     let l = line(".")
     let c = col(".")
     %s/\s\+$//e
+    %s///e
     call cursor(l, c)
 endfun
 autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
@@ -63,11 +66,14 @@ if (executable('clangd'))
         \ })
 endif
 
+let g:syntastic_shell = "/bin/bash"
+
 let g:ale_fixers = {
         \ 'c': ['clang-format'],
         \ 'cpp': ['clang-format']
 \ }
 
+nmap <F8> :TagbarToggle<CR>
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
