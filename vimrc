@@ -9,6 +9,8 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Yggdroot/LeaderF'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-git'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'prabirshrestha/async.vim'
@@ -52,6 +54,8 @@ fun! <SID>strip_trailing_whitespace()
     let l = line(".")
     let c = col(".")
     %s/\s\+$//e
+    %s///e
+    %s///e
     %s///e
     call cursor(l, c)
 endfun
@@ -103,6 +107,11 @@ let g:Lf_WildIgnore = {
     \ 'file': ['*.bak','*.o','*.so','*.py[co]']
 \ }
 
+" nerdcommenter configs
+let g:NERDSpaceDelims = 1
+let g:NERDRemoveExtraSpaces = 1
+let g:NERDTrimTrailingWhitespace = 1
+
 " remap window navigation
 nnoremap <leader>h <c-w>h
 nnoremap <leader>j <c-w>j
@@ -129,12 +138,9 @@ nnoremap <leader>sd :wq<cr>
 nnoremap <leader>m :make<cr>
 
 " remap fugitive
-nnoremap <leader>gw :Gwrite
-nnoremap <leader>gr :Gread
-nnoremap <leader>gm :Gmove
-nnoremap <leader>gc :Gcommit
-nnoremap <leader>gs :Gstatus
-nnoremap <leader>gd :Gdiff
-
- " goto file under cursor
- nnoremap gf :vertical wincmd f<cr>
+nnoremap <leader>gw :Gwrite<cr>
+nnoremap <leader>gr :Gread<cr>
+nnoremap <leader>gm :Gmove<cr>
+nnoremap <leader>gc :Gcommit<cr>
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gd :Gdiff<cr>
