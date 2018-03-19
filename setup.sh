@@ -46,9 +46,13 @@ cd $HOME/aur/yaourt
 makepkg -i -s --needed --noconfirm
 
 yaourt -S downgrade --needed --noconfirm
+yaourt -S cquery-git --needed --noconfirm
 
 cd $HOME/.vim
-git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
+if [ ! -d bundle ];
+then
+    git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
+fi
 vim +PluginInstall +qall
 
 cd $HOME/.vim/bundle/LeaderF

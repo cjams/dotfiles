@@ -1,0 +1,19 @@
+
+" add bareflank settings ---------{{{
+
+""" set path
+set path+=hypervisor/bfvmm/include
+set path+=hypervisor/bfsdk/include
+set path+=hypervisor/bfintrinsics/include
+set path+=hypervisor/bfm/include
+
+if isdirectory('eapis/include')
+    set path+=eapis/include
+elseif isdirectory('extended_apis/include')
+    set path+=extended_apis/include
+endif
+
+""" set makeprg
+let &makeprg="cmake --build ~/bareflank/build-eapis"
+
+" }}}

@@ -4,7 +4,7 @@ set -e
 short_opts="e:v:h"
 long_opts="eapis-branch:,hypervisor-branch:,help"
 
-eb=master
+eb=dev
 vb=master
 
 reset="\e[0m"
@@ -74,32 +74,32 @@ echo_milestone "Install dependencies"
 echo_task "Update system"
 sudo pacman -Syu --needed --noconfirm
 echo_task "Install dependencies from official repos"
-sudo pacman -S cmake linux-headers nasm ninja --needed --noconfirm
+sudo pacman -S clang cmake linux-headers nasm ninja --needed --noconfirm
 
 #
 # Install downgrade for clang-and-friends 4.0
 # This is necessary until Bareflank's c and cpp runtime is ported
 # to a newer version of clang
 #
-echo_task "Install dependencies from AUR repos"
-if [ -z "$(which downgrade)" ];
-then
-    git clone https://aur.archlinux.org/package-query.git /tmp/package-query
-    git clone https://aur.archlinux.org/yaourt.git /tmp/yaourt
-    pushd /tmp/package-query
-    makepkg --install --syncdeps --needed --noconfirm
-    cd ../yaourt
-    makepkg --install --syncdeps --needed --noconfirm
-    popd
-    rm -rf /tmp/package-query
-    rm -rf /tmp/yaourt
-fi
-sudo yaourt -S downgrade --needed --noconfirm
-
-# select 4.0.x for each package
-echo_task "Downgrade clang packages (select 4.0.x)"
-sleep 2
-sudo downgrade clang clang-tools-extra llvm-libs -- --needed --noconfirm
+# echo_task "Install dependencies from AUR repos"
+# if [ -z "$(which downgrade)" ];
+# then
+#     git clone https://aur.archlinux.org/package-query.git /tmp/package-query
+#     git clone https://aur.archlinux.org/yaourt.git /tmp/yaourt
+#     pushd /tmp/package-query
+#     makepkg --install --syncdeps --needed --noconfirm
+#     cd ../yaourt
+#     makepkg --install --syncdeps --needed --noconfirm
+#     popd
+#     rm -rf /tmp/package-query
+#     rm -rf /tmp/yaourt
+# fi
+# sudo yaourt -S downgrade --needed --noconfirm
+#
+# # select 4.0.x for each package
+# echo_task "Downgrade clang packages (select 4.0.x)"
+# sleep 2
+# sudo downgrade clang clang-tools-extra llvm-libs -- --needed --noconfirm
 
 #
 # Add symlink for clang-tidy.
@@ -120,6 +120,9 @@ cp -v $HOME/dotfiles/bareflank/config/cmake/eapis-{,no}test.cmake \
 echo_task "Install eapis scripts"
 cp -rv $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
 
+echo_task "Install project vimrc"
+cp -v $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
+
 if [ ! -d hypervisor ];
 then
     echo_task "Clone $vb branch of hypervisor"
@@ -133,13 +136,19 @@ then
 fi
 
 pushd hypervisor
-echo_task "Add upstream remote: https://github.com/bareflank/hypervisor.git"
-git remote -v add upstream https://github.com/bareflank/hypervisor.git
+if [ -z $(git remote | grep upstream) ];
+then
+    echo_task "Add upstream remote: https://github.com/bareflank/hypervisor.git"
+    git remote -v add upstream https://github.com/bareflank/hypervisor.git
+fi
 popd
 
 pushd eapis
-echo_task "Add upstream remote: https://github.com/bareflank/extended_apis.git"
-git remote -v add upstream https://github.com/bareflank/extended_apis.git
+if [ -z $(git remote | grep upstream) ];
+then
+    echo_task "Add upstream remote: https://github.com/bareflank/extended_apis.git"
+    git remote -v add upstream https://github.com/bareflank/extended_apis.git
+fi
 popd
 
 popd
