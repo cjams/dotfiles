@@ -18,8 +18,10 @@ Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
 Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'pdavydov108/vim-lsp-cquery'
 Plugin 'majutsushi/tagbar'
 Plugin 'w0rp/ale'
+Plugin 'rhysd/vim-clang-format'
 
 call vundle#end()
 
@@ -43,6 +45,7 @@ set expandtab
 set shiftwidth=4
 set smarttab
 set makeprg=ninja
+set completeopt+=preview
 
 " set grep program
 set grepprg=ag\ --vimgrep\ $*
@@ -75,6 +78,8 @@ endfun
 augroup format
     autocmd!
     autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
+"    autocmd FileType c,cpp,h map <buffer><Leader>x <Plug>(operator-clang-format)
+    autocmd FileType c,cpp,h nnoremap <leader>cf :<c-u>ClangFormat<cr>
 augroup END
 
 augroup filetype_vim
@@ -84,18 +89,21 @@ augroup END
 
 augroup filetype_cpp
     autocmd!
-    autocmd FileType cpp setlocal foldmethod=diff
+    autocmd FileType cpp,c,h setlocal foldmethod=diff
 augroup END
 " }}}
 
 " plugin variables --------------------------------------------------------{{{
+
 let g:lsp_async_completion = 1
+
 if (executable('cquery'))
     au User lsp_setup call lsp#register_server({
         \ 'name': 'cquery',
         \ 'cmd': {server_info->['cquery']},
         \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-        \ 'whitelist': ['c', 'cpp', 'h']
+        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/cquery/cache' },
+        \ 'whitelist': ['c', 'cpp', 'h'],
         \ })
 endif
 
@@ -117,6 +125,8 @@ let g:ale_linters = {
     \ 'cpp': ['clang-tidy']
 \ }
 
+let g:ale_asm_gcc_options = 'nasm -f elf64'
+
 " default search tool for LeaderF
 " let g:Lf_DefaultExternalTool = 'ag'
 "
@@ -132,15 +142,15 @@ let g:ale_linters = {
 " set LeaderF shortcut for searching buffer
 " let g:Lf_ShortcutB = '<leader>b'
 
-let g:Lf_WildIgnore = {
-    \ 'dir': ['.svn','.git','.hg','build/*'],
-    \ 'file': ['*.bak','*.o','*.so','*.py[co]']
-\ }
+" let g:Lf_WildIgnore = {
+"     \ 'dir': ['.svn','.git','.hg','build/*'],
+"     \ 'file': ['*.bak','*.o','*.so','*.py[co]']
+" \ }
 
 " nerdcommenter configs
-let g:NERDSpaceDelims = 1
-let g:NERDRemoveExtraSpaces = 1
-let g:NERDTrimTrailingWhitespace = 1
+" let g:NERDSpaceDelims = 1
+" let g:NERDRemoveExtraSpaces = 1
+" let g:NERDTrimTrailingWhitespace = 1
 
 " }}}
 
