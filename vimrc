@@ -8,20 +8,22 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-" Plugin 'Yggdroot/LeaderF'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-dispatch'
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'mileszs/ack.vim'
+
+Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
-Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
-Plugin 'pdavydov108/vim-lsp-cquery'
-Plugin 'majutsushi/tagbar'
-Plugin 'w0rp/ale'
-Plugin 'rhysd/vim-clang-format'
+
+" Plugin 'Yggdroot/LeaderF'
+" Plugin 'pdavydov108/vim-lsp-cquery'
+" Plugin 'majutsushi/tagbar'
+" Plugin 'w0rp/ale'
+" Plugin 'rhysd/vim-clang-format'
 
 call vundle#end()
 
@@ -102,7 +104,7 @@ if (executable('cquery'))
         \ 'name': 'cquery',
         \ 'cmd': {server_info->['cquery']},
         \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/cquery/cache' },
+        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
         \ 'whitelist': ['c', 'cpp', 'h'],
         \ })
 endif
@@ -111,21 +113,21 @@ endif
 let g:ackprg = "ag --vimgrep"
 
 " ale setttings
-let g:ale_completion_enabled = 0
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_enter = 0
+" let g:ale_completion_enabled = 0
+" let g:ale_lint_on_save = 1
+" let g:ale_lint_on_enter = 0
+"
+" let g:ale_fixers = {
+"     \ 'c': ['clang-format'],
+"     \ 'cpp': ['clang-format']
+" \ }
+"
+" let g:ale_linters = {
+"     \ 'c': ['clang-tidy'],
+"     \ 'cpp': ['clang-tidy']
+" \ }
 
-let g:ale_fixers = {
-    \ 'c': ['clang-format'],
-    \ 'cpp': ['clang-format']
-\ }
-
-let g:ale_linters = {
-    \ 'c': ['clang-tidy'],
-    \ 'cpp': ['clang-tidy']
-\ }
-
-let g:ale_asm_gcc_options = 'nasm -f elf64'
+" let g:ale_asm_gcc_options = 'nasm -f elf64'
 
 " default search tool for LeaderF
 " let g:Lf_DefaultExternalTool = 'ag'
