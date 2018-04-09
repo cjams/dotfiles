@@ -8,16 +8,17 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-dispatch'
-Plugin 'vim-airline/vim-airline'
+
 Plugin 'airblade/vim-gitgutter'
 Plugin 'mileszs/ack.vim'
-
-Plugin 'prabirshrestha/asyncomplete.vim'
-Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
+Plugin 'prabirshrestha/async.vim'
+Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-fugitive'
+Plugin 'vim-airline/vim-airline'
+Plugin 'jtratner/vim-flavored-markdown'
 
 " Plugin 'Yggdroot/LeaderF'
 " Plugin 'pdavydov108/vim-lsp-cquery'
@@ -48,6 +49,10 @@ set shiftwidth=4
 set smarttab
 set makeprg=ninja
 set completeopt+=preview
+set switchbuf=usetab
+set wildmenu
+set wildmode=full
+set wildchar=<Tab>
 
 " set grep program
 set grepprg=ag\ --vimgrep\ $*
@@ -91,26 +96,34 @@ augroup END
 
 augroup filetype_cpp
     autocmd!
-    autocmd FileType cpp,c,h setlocal foldmethod=diff
+    autocmd FileType cpp,c,h setlocal foldmethod=indent
+augroup END
+
+augroup markdown
+    au!
+    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
 " }}}
 
 " plugin variables --------------------------------------------------------{{{
 
-let g:lsp_async_completion = 1
+ let g:lsp_verbose = 1
+  let g:lsp_async_completion = 1
+  let g:lsp_log_file = '/home/cjd/bareflank/lsp.log'
 
-if (executable('cquery'))
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'cquery',
-        \ 'cmd': {server_info->['cquery']},
-        \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
-        \ 'whitelist': ['c', 'cpp', 'h'],
-        \ })
-endif
+  if (executable('cquery'))
+      au User lsp_setup call lsp#register_server({
+          \ 'name': 'cquery',
+          \ 'cmd': {server_info->['cquery']},
+          \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+          \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
+          \ 'whitelist': ['c', 'cpp' ],
+          \ })
+  endif
 
 " ack setttings
 let g:ackprg = "ag --vimgrep"
+let g:DoxygenToolkit_commentType = "C++"
 
 " ale setttings
 " let g:ale_completion_enabled = 0
@@ -163,6 +176,8 @@ let mapleader=","
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
+nnoremap <leader>sb :sb
+
 """ append semicolon
 nnoremap <leader>as mqA;<esc>`q
 
@@ -170,24 +185,34 @@ nnoremap <leader>as mqA;<esc>`q
 inoremap <leader><c-u> <esc>vawUi
 nnoremap <leader><c-u> vawU<esc>
 
-""" ale maps
-nnoremap <leader>af :ALEFix<cr>
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
+""" buffer list
+nnoremap <F5> :buffers<cr>:buffer<space>
 
-""" tagbar key
-nnoremap <F8> :TagbarToggle<CR>
+set wildcharm=<c-z>
+nnoremap <F6> :b <c-z>
+
+""" ale maps
+" nnoremap <leader>af :ALEFix<cr>
+" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-j> <Plug>(ale_next_wrap)
+"
+" """ tagbar key
+" nnoremap <F8> :TagbarToggle<CR>
 
 """ asyncomplete
-inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
+inoremap <silent> <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <silent> <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+inoremap <silent> <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 """ vim-lsp
 nnoremap <leader>ln :LspRename<cr>
 nnoremap <leader>ld :LspDefinition<cr>
 nnoremap <leader>lr :LspReferences<cr>
+nnoremap <leader>lcc :LspCqueryCallers<cr>
+nnoremap <leader>lcd :LspCqueryDerived<cr>
+nnoremap <leader>lcb :LspCqueryBase<cr>
+nnoremap <leader>lcv :LspCqueryVars<cr>
 
 " remap esc
 inoremap <leader>e <esc>
