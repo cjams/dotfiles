@@ -108,8 +108,7 @@ augroup END
 " plugin variables --------------------------------------------------------{{{
 
  let g:lsp_verbose = 1
-  let g:lsp_async_completion = 1
-  let g:lsp_log_file = '/home/cjd/bareflank/lsp.log'
+ let g:lsp_async_completion = 1
 
   if (executable('cquery'))
       au User lsp_setup call lsp#register_server({
