@@ -108,8 +108,9 @@ echo_milestone "Setup Bareflank development environment"
 echo_task "Symlink clang-tidy"
 sudo ln -fs /usr/share/clang/run-clang-tidy.py /usr/bin/run-clang-tidy-4.0.py
 
-mkdir -p $HOME/bareflank/{build,cache}
-echo_task "Make build directory: $HOME/bareflank/build"
+mkdir -p $HOME/bareflank/{build-{hypervisor,eapis},cache}
+echo_task "Make build directory: $HOME/bareflank/build-hypervisor"
+echo_task "Make build directory: $HOME/bareflank/build-eapis"
 echo_task "Make cache directory: $HOME/bareflank/cache"
 pushd $HOME/bareflank
 
