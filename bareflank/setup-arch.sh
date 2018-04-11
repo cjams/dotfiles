@@ -117,10 +117,8 @@ echo_task "Install cmake configs"
 cp -v $HOME/dotfiles/bareflank/config/cmake/eapis-{,no}test.cmake \
       $HOME/bareflank/
 
-echo_task "Install eapis scripts"
+echo_task "Install scripts"
 cp -rv $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
-
-echo_task "Install project vimrc"
 cp -v $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
 
 if [ ! -d hypervisor ];
