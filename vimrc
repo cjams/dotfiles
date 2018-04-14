@@ -107,18 +107,16 @@ augroup END
 
 " plugin variables --------------------------------------------------------{{{
 
- let g:lsp_verbose = 1
- let g:lsp_async_completion = 1
-
-  if (executable('cquery'))
-      au User lsp_setup call lsp#register_server({
-          \ 'name': 'cquery',
-          \ 'cmd': {server_info->['cquery']},
-          \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-          \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
-          \ 'whitelist': ['c', 'cpp' ],
-          \ })
-  endif
+let g:lsp_async_completion = 1
+if (executable('cquery'))
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'cquery',
+        \ 'cmd': {server_info->['cquery']},
+        \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
+        \ 'whitelist': ['c', 'cpp' ],
+        \ })
+endif
 
 " ack setttings
 let g:ackprg = "ag --vimgrep"

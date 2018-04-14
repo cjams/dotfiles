@@ -7,8 +7,12 @@ if [[ $# -ne 1 ]]; then
 fi
 
 ghub_user=$1
-
 dir="$HOME/dotfiles"
+
+sudo pacman -Syu --noconfirm
+sudo pacman -S python ctags fish git openssh vim tree --needed
+sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
+sudo pacman -S linux-headers libtraceevent perf gnupg --needed
 
 rm -rf $HOME/.config/fish
 rm -rf $HOME/.gitconfig
@@ -18,15 +22,16 @@ rm -rf $HOME/.vimrc
 mkdir -pv $HOME/.config
 mkdir -pv $HOME/aur
 
+if [ ! -d $HOME/.gnupg ];
+then
+    gpg --generate-key
+fi
+
 ln -fsv $dir/config/fish $HOME/.config/fish
 ln -fsv $dir/gitconfig $HOME/.gitconfig
 ln -fsv $dir/vim $HOME/.vim
 ln -fsv $dir/vimrc $HOME/.vimrc
-
-sudo pacman -Syu --noconfirm
-sudo pacman -S python ctags fish git openssh vim tree --needed
-sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
-sudo pacman -S linux-headers libtraceevent perf --needed
+ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 
 cd $HOME/aur
 if [ ! -d package-query ];
