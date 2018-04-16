@@ -70,8 +70,8 @@ fi
 sudo cp -v $dir/linux/perf.conf /etc/sysctl.d/perf.conf
 sudo sysctl -p /etc/sysctl.d/perf.conf
 
-./bareflank/setup-arch.sh
-./setup-cquery.sh
+$HOME/dotfiles/bareflank/setup-arch.sh
+$HOME/dotfiles/setup-cquery.sh
 
 sudo chsh -s $(which fish) $USER
 fish -c $dir/setup.fish
