@@ -39,7 +39,7 @@ set ruler
 set nohls
 set relativenumber
 set number
-set autoindent
+set cindent=4
 set confirm
 set title
 set tabstop=8
@@ -94,10 +94,10 @@ augroup filetype_vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 
-augroup filetype_cpp
-    autocmd!
-    autocmd FileType cpp,c,h setlocal foldmethod=indent
-augroup END
+" augroup filetype_cpp
+"     autocmd!
+"     autocmd FileType cpp,c,h setlocal foldmethod=indent
+" augroup END
 
 augroup markdown
     au!
