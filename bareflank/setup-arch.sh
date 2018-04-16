@@ -115,7 +115,7 @@ echo_task "Make cache directory: $HOME/bareflank/cache"
 pushd $HOME/bareflank
 
 echo_task "Symlink scripts"
-ln -sf $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
+cp -r $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
 ln -sf $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
 
 if [ ! -d hypervisor ];
