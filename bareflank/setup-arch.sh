@@ -114,13 +114,9 @@ echo_task "Make build directory: $HOME/bareflank/build-eapis"
 echo_task "Make cache directory: $HOME/bareflank/cache"
 pushd $HOME/bareflank
 
-echo_task "Install cmake configs"
-cp -v $HOME/dotfiles/bareflank/config/cmake/eapis-{,no}test.cmake \
-      $HOME/bareflank/
-
-echo_task "Install scripts"
-cp -rv $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
-cp -v $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
+echo_task "Symlink scripts"
+ln -sf $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
+ln -sf $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
 
 if [ ! -d hypervisor ];
 then

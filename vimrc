@@ -39,7 +39,7 @@ set ruler
 set nohls
 set relativenumber
 set number
-set cindent=4
+set cindent
 set confirm
 set title
 set tabstop=8
