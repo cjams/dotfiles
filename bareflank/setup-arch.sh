@@ -90,9 +90,10 @@ echo_task "Make build directory: $HOME/bareflank/build-eapis"
 echo_task "Make cache directory: $HOME/bareflank/cache"
 pushd $HOME/bareflank
 
-echo_task "Symlink scripts"
-cp -r $HOME/dotfiles/bareflank/scripts $HOME/bareflank/
-ln -sf $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
+echo_task "Copy scripts"
+cp $HOME/dotfiles/bareflank/*.cmake $HOME/bareflank/
+cp $HOME/dotfiles/bareflank/*.sh $HOME/bareflank/
+cp $HOME/dotfiles/bareflank/vimrc $HOME/bareflank/
 
 if [ ! -d hypervisor ];
 then

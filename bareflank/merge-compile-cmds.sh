@@ -6,18 +6,6 @@ then
     exit
 fi
 
-cmds="$(find * -wholename "$1*bfintrinsics*/*compile_commands.json")"
-cmds="$(find * -wholename "$1*bfvmm/*compile_commands.json") $cmds"
-cmds="$(find * -wholename "$1*eapis/*compile_commands.json") $cmds"
-
 rm -rf compile_commands.json
-
-for cmd in "$cmds"
-do
-    cat $cmd >> compile_commands.json
-done
-
-sed -i 's|\]\[|,|' compile_commands.json
-tac compile_commands.json | sed '/nasm/,+2d' | tac | sed '/asm/,+1d' | tee compile_commands.json
-sed -i 's|^,$||' compile_commands.json
-echo "]" >> compile_commands.json
+cmd_files=$(find . -name compile_commands.json)
+sed -e '1s/^/[\n/' -e '$s/,$/\n]/' $cmd_files > compile_commands.json

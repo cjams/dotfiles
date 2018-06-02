@@ -18,7 +18,6 @@ Plugin 'prabirshrestha/asyncomplete-lsp.vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vim-airline/vim-airline'
-Plugin 'jtratner/vim-flavored-markdown'
 
 " Plugin 'Yggdroot/LeaderF'
 " Plugin 'pdavydov108/vim-lsp-cquery'
@@ -120,7 +119,6 @@ endif
 
 " ack setttings
 let g:ackprg = "ag --vimgrep"
-let g:DoxygenToolkit_commentType = "C++"
 
 " ale setttings
 " let g:ale_completion_enabled = 0
@@ -203,6 +201,7 @@ inoremap <silent> <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 """ vim-lsp
+nnoremap <leader>li :LspImplementation<cr>
 nnoremap <leader>ln :LspRename<cr>
 nnoremap <leader>ld :LspDefinition<cr>
 nnoremap <leader>lr :LspReferences<cr>
