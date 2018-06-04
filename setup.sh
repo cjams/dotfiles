@@ -33,6 +33,8 @@ ln -fsv $dir/vim $HOME/.vim
 ln -fsv $dir/vimrc $HOME/.vimrc
 ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 
+sed -i "s|/home/cjd/.cache/cquery|/home/$USER/.cache/cquery|" $dir/vimrc
+
 cd $HOME/aur
 if [ ! -d package-query ];
 then
