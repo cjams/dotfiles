@@ -10,9 +10,10 @@ ghub_user=$1
 dir="$HOME/dotfiles"
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S python ctags fish git openssh vim tree --needed
-sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed
-sudo pacman -S linux-headers libtraceevent perf gnupg --needed
+sudo pacman -S python ctags fish git openssh vim tree --needed --noconfirm
+sudo pacman -S asp the_silver_searcher ttf-inconsolata --needed --noconfirm
+sudo pacman -S linux-headers libtraceevent perf gnupg --needed --noconfirm
+sudo pacman -S radare2 --needed --noconfirm
 
 rm -rf $HOME/.config/fish
 rm -rf $HOME/.gitconfig
