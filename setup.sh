@@ -78,3 +78,7 @@ $HOME/dotfiles/setup-cquery.sh
 
 sudo chsh -s $(which fish) $USER
 fish -c $dir/setup.fish
+
+pushd $dir
+git remote set-url origin git@github.com:connojd/dotfiles.git
+popd
