@@ -112,7 +112,7 @@ if (executable('cquery'))
         \ 'name': 'cquery',
         \ 'cmd': {server_info->['cquery']},
         \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-        \ 'initialization_options': { 'cacheDirectory': '/home/cjd/.cache/cquery' },
+        \ 'initialization_options': { 'cacheDirectory': '/home/dev/.cache/cquery' },
         \ 'whitelist': ['c', 'cpp' ],
         \ })
 endif
@@ -253,11 +253,11 @@ nnoremap <leader>gd :Gdiff<cr>
 " remap vim-dispatch
 nnoremap <leader>fh :Dispatch cmake --build ~/bareflank/build-hypervisor<cr>
 nnoremap <leader>fhb :Dispatch! cmake --build ~/bareflank/build-hypervisor<cr>
-nnoremap <leader>fht :Dispatch ninja -f ~/bareflank/build-hypervisor/build.ninja test<cr>
+nnoremap <leader>fht :Dispatch ninja -f ~/bareflank/build-hypervisor/build.ninja unittest<cr>
 
 nnoremap <leader>fe :Dispatch cmake --build ~/bareflank/build-eapis<cr>
 nnoremap <leader>feb :Dispatch! cmake --build ~/bareflank/build-eapis<cr>
-nnoremap <leader>fet :Dispatch ninja -f ~/bareflank/build-eapis/build.ninja test<cr>
+nnoremap <leader>fet :Dispatch ninja -f ~/bareflank/build-eapis/build.ninja unittest<cr>
 
 " }}}
 
