@@ -18,6 +18,7 @@ Plugin 'prabirshrestha/asyncomplete-lsp.vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vim-airline/vim-airline'
+Plugin 'wolf-dog/sceaduhelm.vim'
 
 " Plugin 'Yggdroot/LeaderF'
 " Plugin 'pdavydov108/vim-lsp-cquery'
@@ -61,7 +62,7 @@ set grepformat=%f:%l:%c:%m
 " colorscheme -----------------------------------------------------------{{{
 
 if $TERM != "linux"
-    colorscheme lettuce
+    colorscheme sceaduhelm
 else
     colorscheme slate
 endif
