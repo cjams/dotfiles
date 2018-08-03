@@ -20,12 +20,6 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'vim-airline/vim-airline'
 Plugin 'wolf-dog/sceaduhelm.vim'
 
-" Plugin 'Yggdroot/LeaderF'
-" Plugin 'pdavydov108/vim-lsp-cquery'
-" Plugin 'majutsushi/tagbar'
-" Plugin 'w0rp/ale'
-" Plugin 'rhysd/vim-clang-format'
-
 call vundle#end()
 
 filetype plugin indent on
@@ -34,6 +28,8 @@ syntax on
 " }}}
 
 " config variables -----------------------------------------------------------{{{
+set exrc
+set secure
 set updatetime=250
 set ruler
 set nohls

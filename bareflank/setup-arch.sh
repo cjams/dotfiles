@@ -82,7 +82,7 @@ sudo pacman -S nasm ninja refind-efi --needed --noconfirm
 #
 echo_milestone "Setup Bareflank development environment"
 echo_task "Symlink clang-tidy"
-sudo ln -fs /usr/share/clang/run-clang-tidy.py /usr/bin/run-clang-tidy-4.0.py
+sudo ln -fs /usr/share/clang/run-clang-tidy.py /usr/bin/run-clang-tidy-6.0.py
 
 mkdir -p $HOME/bareflank/{build-{hypervisor,eapis},cache}
 echo_task "Make build directory: $HOME/bareflank/build-hypervisor"
