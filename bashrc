@@ -29,7 +29,6 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWUPSTREAM=1
 
-source /etc/profile.d/cnf.sh
 source /usr/share/git/completion/git-prompt.sh
 source /usr/share/bash-completion/bash_completion
 

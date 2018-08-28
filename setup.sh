@@ -34,21 +34,6 @@ ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
 
-sed -i "s|/home/cjd/.cache/cquery|/home/$USER/.cache/cquery|" $dir/vimrc
-
-case $(cat /etc/os-release | egrep "^ID") in
-    "ID=arch")
-        $dir/setup-yaourt.sh
-        ;;
-    *)
-        ;;
-esac
-
-#
-# At this point, yaourt is in PATH
-#
-yaourt -S command-not-found --needed --noconfirm
-
 cd $HOME/.vim
 if [ ! -d bundle ];
 then
@@ -56,18 +41,8 @@ then
 fi
 vim +PluginInstall +qall
 
-cd $HOME
-if [ ! -e $HOME/.ssh/id_rsa.pub ]; then
-	ssh-keygen
-	git clone https://github.com/b4b4r07/ssh-keyreg.git
-	./ssh-keyreg/bin/ssh-keyreg -u $ghub_user github
-        rm -rf ssh-keyreg
-fi
-
 $HOME/dotfiles/bareflank/setup-arch.sh
 $HOME/dotfiles/setup-cquery.sh
-
-sudo chsh -s $(which bash) $USER
 
 pushd $dir
 git remote set-url origin git@github.com:connojd/dotfiles.git
