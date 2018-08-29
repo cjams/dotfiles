@@ -13,7 +13,7 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S linux-headers gnupg ttf-inconsolata --needed --noconfirm
 sudo pacman -S python ctags git openssh vim tree --needed --noconfirm
 sudo pacman -S asp the_silver_searcher --needed --noconfirm
-sudo pacman -S radare2 --needed --noconfirm
+sudo pacman -S radare2 xdg-user-dirs --needed --noconfirm
 
 rm -rf $HOME/.gitconfig
 rm -rf $HOME/.vim
@@ -33,6 +33,15 @@ ln -fsv $dir/vimrc $HOME/.vimrc
 ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
+
+xdg-user-dirs-update --set DESKTOP $HOME
+xdg-user-dirs-update --set DOCUMENTS $HOME/docs
+xdg-user-dirs-update --set DOWNLOAD $HOME/downloads
+xdg-user-dirs-update --set PUBLICSHARE $HOME
+xdg-user-dirs-update --set TEMPLATES $HOME
+xdg-user-dirs-update --set MUSIC $HOME
+xdg-user-dirs-update --set PICTURES $HOME
+xdg-user-dirs-update --set VIDEO $HOME
 
 cd $HOME/.vim
 if [ ! -d bundle ];
