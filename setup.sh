@@ -12,7 +12,7 @@ dir="$HOME/dotfiles"
 sudo pacman -Syu --noconfirm
 sudo pacman -S linux-headers gnupg ttf-inconsolata --needed --noconfirm
 sudo pacman -S python ctags git openssh vim tree --needed --noconfirm
-sudo pacman -S asp the_silver_searcher --needed --noconfirm
+sudo pacman -S the_silver_searcher --needed --noconfirm
 sudo pacman -S radare2 xdg-user-dirs --needed --noconfirm
 
 rm -rf $HOME/.gitconfig

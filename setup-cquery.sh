@@ -20,12 +20,7 @@ pushd ncurses5-compat-libs
 makepkg -i -s --needed --noconfirm
 popd
 
-pushd libtinfo-5
-makepkg -i -s --needed --noconfirm
-popd
-
 rm -rf ncurses5-compat-libs
-rm -rf libtinfo-5
 
 #
 # Build cquery
