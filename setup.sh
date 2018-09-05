@@ -34,14 +34,14 @@ ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
 
-xdg-user-dirs-update --set DESKTOP $HOME
+xdg-user-dirs-update --set DESKTOP $HOME/desktop
 xdg-user-dirs-update --set DOCUMENTS $HOME/docs
 xdg-user-dirs-update --set DOWNLOAD $HOME/downloads
-xdg-user-dirs-update --set PUBLICSHARE $HOME
-xdg-user-dirs-update --set TEMPLATES $HOME
-xdg-user-dirs-update --set MUSIC $HOME
-xdg-user-dirs-update --set PICTURES $HOME
-xdg-user-dirs-update --set VIDEO $HOME
+xdg-user-dirs-update --set PUBLICSHARE $HOME/desktop
+xdg-user-dirs-update --set TEMPLATES $HOME/desktop
+xdg-user-dirs-update --set MUSIC $HOME/desktop
+xdg-user-dirs-update --set PICTURES $HOME/desktop
+xdg-user-dirs-update --set VIDEO $HOME/desktop
 
 cd $HOME/.vim
 if [ ! -d bundle ];
