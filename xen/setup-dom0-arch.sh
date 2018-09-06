@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#sudo ln -sf /usr/bin/python2 /usr/bin/python
-#sudo pacman -S iasl python2-yaml ovmf --needed --noconfirm
-./configure --disable-rombios --disable-docs --disable-flask --disable-vtpm-stubdom --disable-vtpmmgr-stubdom --disable-ioemu-stubdom --disable-seabios --prefix=/usr
-sudo make install -j$(nproc)
+sudo ln -sf /usr/bin/python2 /usr/bin/python
+sudo pacman -S yajl bin86 iasl python2-yaml --needed --noconfirm
+./configure --disable-rombios --disable-docs --disable-stubdom --disable-seabios --prefix=/usr
+make -j$(nproc)
 
 if [ ! -d /boot/efi/EFI/xen ];
 then
