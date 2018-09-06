@@ -34,14 +34,16 @@ ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
 
-xdg-user-dirs-update --set DESKTOP $HOME/desktop
-xdg-user-dirs-update --set DOCUMENTS $HOME/docs
-xdg-user-dirs-update --set DOWNLOAD $HOME/downloads
-xdg-user-dirs-update --set PUBLICSHARE $HOME/desktop
-xdg-user-dirs-update --set TEMPLATES $HOME/desktop
-xdg-user-dirs-update --set MUSIC $HOME/desktop
-xdg-user-dirs-update --set PICTURES $HOME/desktop
-xdg-user-dirs-update --set VIDEO $HOME/desktop
+mkdir -p $HOME/{.config,.desktop,docs,downloads}
+
+echo 'XDG_DESKTOP_DIR=$HOME/.desktop' > $HOME/.config/user-dirs.dirs
+echo 'XDG_PUBLICSHARE_DIR=$HOME/.desktop' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_TEMPLATES_DIR=$HOME/.desktop' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_MUSIC_DIR=$HOME/.desktop' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_PICTURES_DIR=$HOME/.desktop' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_VIDEO_DIR=$HOME/.desktop' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_DOCUMENTS_DIR=$HOME/docs' >> $HOME/.config/user-dirs.dirs
+echo 'XDG_DOWNLOADS_DIR=$HOME/downloads' >> $HOME/.config/user-dirs.dirs
 
 cd $HOME/.vim
 if [ ! -d bundle ];
