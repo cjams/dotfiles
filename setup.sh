@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+install_aur()
+{
+    if [ ! -d $1 ];
+    then
+        git clone https://aur.archlinux.org/$1
+        pushd $1
+        makepkg --syncdeps --install --noconfirm --needed
+        popd
+    fi
+}
+
 if [[ $# -ne 1 ]]; then
     echo "Usage: setup.sh <github user name>"
     exit 1
@@ -21,6 +32,10 @@ rm -rf $HOME/.vimrc
 rm -rf $HOME/.bashrc
 
 mkdir -pv $HOME/aur
+pushd $HOME/aur
+install_aur yaourt
+install_aur uefi-shell-git
+popd
 
 if [ ! -d $HOME/.gnupg ];
 then
