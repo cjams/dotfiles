@@ -25,6 +25,7 @@ sudo pacman -S linux-headers gnupg ttf-inconsolata --needed --noconfirm
 sudo pacman -S python ctags git openssh vim tree --needed --noconfirm
 sudo pacman -S the_silver_searcher --needed --noconfirm
 sudo pacman -S radare2 xdg-user-dirs --needed --noconfirm
+sudo pacman -S bash-completion --needed --noconfirm
 
 rm -rf $HOME/.gitconfig
 rm -rf $HOME/.vim
@@ -33,6 +34,7 @@ rm -rf $HOME/.bashrc
 
 mkdir -pv $HOME/aur
 pushd $HOME/aur
+install_aur package-query
 install_aur yaourt
 install_aur uefi-shell-git
 popd
