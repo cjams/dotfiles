@@ -15,11 +15,15 @@ install_aur()
 dir="$HOME/dotfiles"
 
 sudo pacman -Syu --noconfirm
-sudo pacman -S linux-headers gnupg ttf-inconsolata --needed --noconfirm
-sudo pacman -S python ctags git openssh vim tree --needed --noconfirm
-sudo pacman -S the_silver_searcher --needed --noconfirm
-sudo pacman -S radare2 xdg-user-dirs --needed --noconfirm
-sudo pacman -S bash-completion --needed --noconfirm
+
+pkgs="bash-completion ctags git gnupg linux-headers openssh python"
+pkgs="$pkgs the_silver_searcher tree ttf-inconsolata vim"
+pkgs="$pkgs xdg-user-dirs zsh"
+
+for p in $pkgs
+do
+    sudo pacman -S $p --needed --noconfirm
+done
 
 rm -rf $HOME/.gitconfig
 rm -rf $HOME/.vim
