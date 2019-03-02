@@ -34,5 +34,10 @@ export GIT_PS1_SHOWUPSTREAM=1
 source /usr/share/git/completion/git-prompt.sh
 source /usr/share/bash-completion/bash_completion
 
-PROMPT_COMMAND='__git_ps1 "\w" " \$ "'
+PROMPT_COMMAND='__git_ps1 "\w" " (\h) \$ "'
 EDITOR=/usr/bin/vim
+
+sudo ln -sf /usr/bin/clang /usr/bin/ccache
+sudo ln -sf /usr/bin/clang++ /usr/bin/ccache
+sudo ln -sf /usr/bin/gcc /usr/bin/ccache
+sudo ln -sf /usr/bin/g++ /usr/bin/ccache
