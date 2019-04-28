@@ -12,13 +12,11 @@ install_aur()
     fi
 }
 
-dir="$HOME/dotfiles"
-
 sudo pacman -Syu --noconfirm
 
 pkgs="bash-completion ctags git gnupg linux-headers openssh python"
 pkgs="$pkgs the_silver_searcher tree ttf-inconsolata vim"
-pkgs="$pkgs xdg-user-dirs zsh"
+pkgs="$pkgs xdg-user-dirs fish"
 
 for p in $pkgs
 do
@@ -29,14 +27,18 @@ rm -rf $HOME/.gitconfig
 rm -rf $HOME/.vim
 rm -rf $HOME/.vimrc
 rm -rf $HOME/.bashrc
+rm -rf $HOME/.inputrc
+rm -rf $HOME/.config/fish
+
+dir="$HOME/dotfiles"
+
+mkdir -p $HOME/{.config,.desktop,doc,dl}
 
 ln -fsv $dir/gitconfig $HOME/.gitconfig
 ln -fsv $dir/vim $HOME/.vim
 ln -fsv $dir/vimrc $HOME/.vimrc
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
-
-mkdir -p $HOME/{.config,.desktop,doc,dl}
 
 xdg-user-dirs-update --set DESKTOP ~/.desktop
 xdg-user-dirs-update --set MUSIC ~/.desktop
@@ -55,7 +57,7 @@ fi
 vim +PluginInstall +qall
 
 pushd $dir
-git remote set-url origin git@github.com:connojd/dotfiles.git
+    git remote set-url origin git@github.com:connojd/dotfiles.git
 popd
 
-source $HOME/.bashrc
+sudo chsh $USER -s /usr/bin/fish
