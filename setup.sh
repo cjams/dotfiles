@@ -28,11 +28,13 @@ rm -rf $HOME/.vim
 rm -rf $HOME/.vimrc
 rm -rf $HOME/.bashrc
 rm -rf $HOME/.inputrc
-rm -rf $HOME/.config/fish
+rm -rf $HOME/.config/fish*
 
 dir="$HOME/dotfiles"
 
 mkdir -p $HOME/{.config,.desktop,doc,dl}
+
+cp -r $dir/config/fish $HOME/.config/
 
 ln -fsv $dir/gitconfig $HOME/.gitconfig
 ln -fsv $dir/vim $HOME/.vim
