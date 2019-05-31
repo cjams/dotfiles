@@ -12,10 +12,13 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'vim-airline/vim-airline'
 Plugin 'wolf-dog/sceaduhelm.vim'
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'nvie/vim-flake8'
 
 call vundle#end()
 
 filetype plugin indent on
+let python_highlight_all=1
 syntax on
 
 " }}}
@@ -74,7 +77,6 @@ endfun
 augroup format
     autocmd!
     autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
-"    autocmd FileType c,cpp,h map <buffer><Leader>x <Plug>(operator-clang-format)
     autocmd FileType c,cpp,h nnoremap <leader>cf :<c-u>ClangFormat<cr>
 augroup END
 
@@ -83,15 +85,11 @@ augroup filetype_vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 
-" augroup filetype_cpp
-"     autocmd!
-"     autocmd FileType cpp,c,h setlocal foldmethod=indent
-" augroup END
-
 augroup markdown
     au!
     au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
+
 " }}}
 
 " plugin variables --------------------------------------------------------{{{
@@ -106,51 +104,6 @@ if (executable('cquery'))
         \ 'whitelist': ['c', 'cpp' ],
         \ })
 endif
-
-" ack setttings
-let g:ackprg = "ag --vimgrep"
-
-" ale setttings
-" let g:ale_completion_enabled = 0
-" let g:ale_lint_on_save = 1
-" let g:ale_lint_on_enter = 0
-"
-" let g:ale_fixers = {
-"     \ 'c': ['clang-format'],
-"     \ 'cpp': ['clang-format']
-" \ }
-"
-" let g:ale_linters = {
-"     \ 'c': ['clang-tidy'],
-"     \ 'cpp': ['clang-tidy']
-" \ }
-
-" let g:ale_asm_gcc_options = 'nasm -f elf64'
-
-" default search tool for LeaderF
-" let g:Lf_DefaultExternalTool = 'ag'
-"
-" " default search mode for LeaderF
-" let g:Lf_DefaultMode = 'FullPath'
-"
-" " set LeaderF colorscheme
-" let g:Lf_StlColorscheme = 'powerline'
-"
-" " set LeaderF shortcut for searching files
-" let g:Lf_ShortcutF = '<leader>l'
-
-" set LeaderF shortcut for searching buffer
-" let g:Lf_ShortcutB = '<leader>b'
-
-" let g:Lf_WildIgnore = {
-"     \ 'dir': ['.svn','.git','.hg','build/*'],
-"     \ 'file': ['*.bak','*.o','*.so','*.py[co]']
-" \ }
-
-" nerdcommenter configs
-" let g:NERDSpaceDelims = 1
-" let g:NERDRemoveExtraSpaces = 1
-" let g:NERDTrimTrailingWhitespace = 1
 
 " }}}
 
