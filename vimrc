@@ -14,6 +14,8 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'wolf-dog/sceaduhelm.vim'
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'nvie/vim-flake8'
+Plugin 'pprovost/vim-ps1'
+Plugin 'kergoth/vim-bitbake'
 
 call vundle#end()
 
