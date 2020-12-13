@@ -18,6 +18,7 @@ ln -fsv $dir/vimrc $HOME/.vimrc
 ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
 ln -fsv $dir/zshrc $HOME/.zshrc
+ln -fsv $dir/p10k.zsh $HOME/.p10k.zsh
 
 sed -i "s|/home/connojd|/home/$USER|" $HOME/.zshrc
 
