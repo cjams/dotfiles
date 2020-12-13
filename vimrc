@@ -12,15 +12,12 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'vim-airline/vim-airline'
 Plugin 'wolf-dog/sceaduhelm.vim'
-Plugin 'vim-scripts/indentpython.vim'
-Plugin 'nvie/vim-flake8'
 Plugin 'pprovost/vim-ps1'
 Plugin 'kergoth/vim-bitbake'
 
 call vundle#end()
 
 filetype plugin indent on
-let python_highlight_all=1
 syntax on
 
 " }}}
@@ -41,7 +38,6 @@ set softtabstop=0
 set expandtab
 set shiftwidth=4
 set smarttab
-set makeprg=ninja
 set completeopt+=preview
 set switchbuf=usetab
 set wildmenu
@@ -64,6 +60,7 @@ endif
 " }}}
 
 " functions ---------------------------------------------------------------{{{
+
 fun! <SID>strip_trailing_whitespace()
     let l = line(".")
     let c = col(".")
@@ -73,13 +70,13 @@ fun! <SID>strip_trailing_whitespace()
     %s///e
     call cursor(l, c)
 endfun
+
 " }}}
 
 " augroups ----------------------------------------------------------------{{{
 augroup format
     autocmd!
     autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
-    autocmd FileType c,cpp,h nnoremap <leader>cf :<c-u>ClangFormat<cr>
 augroup END
 
 augroup filetype_vim
@@ -95,17 +92,6 @@ augroup END
 " }}}
 
 " plugin variables --------------------------------------------------------{{{
-
-let g:lsp_async_completion = 1
-if (executable('cquery'))
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'cquery',
-        \ 'cmd': {server_info->['cquery']},
-        \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-        \ 'initialization_options': { 'cacheDirectory': '/home/dev/.cache/cquery' },
-        \ 'whitelist': ['c', 'cpp' ],
-        \ })
-endif
 
 " }}}
 
@@ -130,30 +116,6 @@ nnoremap <F5> :buffers<cr>:buffer<space>
 
 set wildcharm=<c-z>
 nnoremap <F6> :b <c-z>
-
-""" ale maps
-" nnoremap <leader>af :ALEFix<cr>
-" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-" nmap <silent> <C-j> <Plug>(ale_next_wrap)
-"
-" """ tagbar key
-" nnoremap <F8> :TagbarToggle<CR>
-
-""" asyncomplete
-inoremap <silent> <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <silent> <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-inoremap <silent> <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-""" vim-lsp
-nnoremap <leader>li :LspImplementation<cr>
-nnoremap <leader>ln :LspRename<cr>
-nnoremap <leader>ld :LspDefinition<cr>
-nnoremap <leader>lr :LspReferences<cr>
-nnoremap <leader>lcc :LspCqueryCallers<cr>
-nnoremap <leader>lcd :LspCqueryDerived<cr>
-nnoremap <leader>lcb :LspCqueryBase<cr>
-nnoremap <leader>lcv :LspCqueryVars<cr>
 
 " remap esc
 inoremap <leader>e <esc>
@@ -195,19 +157,10 @@ nnoremap <leader>gc :Gcommit<cr>
 nnoremap <leader>gs :Gstatus<cr>
 nnoremap <leader>gd :Gdiff<cr>
 
-" remap vim-dispatch
-nnoremap <leader>fh :Dispatch cmake --build ~/bareflank/build-hypervisor<cr>
-nnoremap <leader>fhb :Dispatch! cmake --build ~/bareflank/build-hypervisor<cr>
-nnoremap <leader>fht :Dispatch ninja -f ~/bareflank/build-hypervisor/build.ninja unittest<cr>
-
-nnoremap <leader>fe :Dispatch cmake --build ~/bareflank/build-eapis<cr>
-nnoremap <leader>feb :Dispatch! cmake --build ~/bareflank/build-eapis<cr>
-nnoremap <leader>fet :Dispatch ninja -f ~/bareflank/build-eapis/build.ninja unittest<cr>
-
 " }}}
 
 " local sourcings ------------------------------------------------------------{{{
-if filereadable(expand('~/bareflank/vimrc'))
-    source ~/bareflank/vimrc
-endif
+"if filereadable(expand('~/bareflank/vimrc'))
+"    source ~/bareflank/vimrc
+"endif
 " }}}
