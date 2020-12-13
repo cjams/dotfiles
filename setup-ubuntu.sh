@@ -45,13 +45,16 @@ sudo mv 'MesloLGS NF Bold Italic.ttf' /usr/share/fonts/truetype/
 fc-cache -f
 sed -i 's|font=\(.*\)|font=MesloLGS NF|' ~/.config/deepin/deepin-terminal/config.conf
 
-# Get oh-my-zsh and plugins
+# Get oh-my-zsh, plugins, and themes
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
 git clone --depth=1 https://github.com/softmoth/zsh-vim-mode $ZSH_CUSTOM/plugins/zsh-vim-mode
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
 git clone --depth=1 https://github.com/romkatv/powerlevel10k $ZSH_CUSTOM/themes/powerlevel10k
 
 # Link custom zsh bits
 ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
+ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
