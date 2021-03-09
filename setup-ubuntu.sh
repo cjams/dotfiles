@@ -2,6 +2,8 @@
 set -e
 
 pkgs="tree vim zsh silversearcher-ag curl deepin-terminal"
+pkgs="$pkgs mbsync neomutt notmuch pass pass-extension-tomb lynx"
+pkgs="$pkgs syncthing keepassxc"
 sudo apt install -y $pkgs
 
 rm -rf $HOME/.gitconfig
@@ -9,6 +11,7 @@ rm -rf $HOME/.vim
 rm -rf $HOME/.vimrc
 rm -rf $HOME/.bashrc
 rm -rf $HOME/.inputrc
+rm -rf $HOME/.gnupg
 
 dir="$HOME/dotfiles"
 
@@ -19,6 +22,7 @@ ln -fsv $dir/bashrc $HOME/.bashrc
 ln -fsv $dir/inputrc $HOME/.inputrc
 ln -fsv $dir/zshrc $HOME/.zshrc
 ln -fsv $dir/p10k.zsh $HOME/.p10k.zsh
+ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
 
 sed -i "s|/home/connojd|/home/$USER|" $HOME/.zshrc
 
@@ -59,3 +63,17 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k $ZSH_CUSTOM/themes/
 # Link custom zsh bits
 ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
 ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
+
+# Setup mail services
+mkdir -p $HOME/mail/.notmuch/hooks
+mkdir -p $HOME/.config/systemd/user
+
+ln -fsv $dir/notmuch-config $HOME/.notmuch-config
+ln -fsv $dir/notmuch-post-new.sh $HOME/mail/.notmuch/hooks/post-new
+ln -fsv $dir/mbsync.service $HOME/.config/systemd/user/mbsync.service
+ln -fsv $dir/mbsync.timer $HOME/.config/systemd/user/mbsync.timer
+ln -fsv $dir/neomutt $HOME/.neomutt
+
+systemctl --user enable mbsync.timer
+
+notmuch setup
