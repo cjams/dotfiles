@@ -84,3 +84,6 @@ export EDITOR=vim
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export SSH_AUTH_SOCK=$(gpgconf --list-dir agent-ssh-socket)
+gpgconf --launch gpg-agent
