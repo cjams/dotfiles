@@ -1,7 +1,14 @@
 [user]
-	email = \"davisc@ainfosec.com\"
-	name = \"Connor Davis\"
+	email = connojdavis@gmail.com
+	name = Connor Davis
 [core]
 	editor = vim
 [pull]
         rebase = true
+[format]
+	thread = true
+[sendemail]
+        smtpEncryption = tls
+        smtpServer = smtp.gmail.com
+        smtpUser = connojdavis@gmail.com
+        smtpServerPort = 587
