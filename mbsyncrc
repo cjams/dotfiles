@@ -1,0 +1,57 @@
+Create Both
+Expunge Both
+Remove Both
+Sync All
+SyncState *
+
+###############
+#### gmail ####
+###############
+
+IMAPAccount gmail
+Host imap.gmail.com
+User connojdavis@gmail.com
+PassCmd "pass gmail/connojdavis.apppass"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+SubFolders Verbatim
+Path ~/mail/gmail/
+Inbox ~/mail/gmail/inbox
+
+# Default inbox
+Channel gmail-inbox
+Master :gmail-remote:
+Slave  :gmail-local:inbox
+
+# Sent
+Channel gmail-sent
+Master :gmail-remote:"[Gmail]/Sent Mail"
+Slave  :gmail-local:sent
+
+# Drafts
+Channel gmail-drafts
+Master :gmail-remote:"[Gmail]/Drafts"
+Slave  :gmail-local:drafts
+
+# Trash
+Channel gmail-trash
+Master :gmail-remote:"[Gmail]/Trash"
+Slave  :gmail-local:trash
+
+# Spam
+Channel gmail-spam
+Master :gmail-remote:"[Gmail]/Spam"
+Slave  :gmail-local:spam
+
+# Grouping
+Group gmail
+Channel gmail-inbox
+Channel gmail-sent
+Channel gmail-drafts
+Channel gmail-trash
+Channel gmail-spam
