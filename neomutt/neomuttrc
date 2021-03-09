@@ -1,0 +1,48 @@
+source ~/.neomutt/colorschemes/vombatidae.neomuttrc
+
+bind index,pager g noop
+bind index gg first-entry
+bind index G last-entry
+bind pager G group-reply
+bind pager j next-line
+bind pager k previous-line
+bind index,pager B sidebar-toggle-visible
+bind index,pager \Ck sidebar-prev
+bind index,pager \Cj sidebar-next
+bind index,pager \Co sidebar-open
+
+set from = connojdavis@gmail.com
+set use_from
+set virtual_spoolfile = yes
+set folder = ~/mail
+set mailcap_path = ~/.neomutt/mailcap
+set sidebar_short_path                             # use leaf of maildir
+set sidebar_visible = yes
+set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
+set date_format = "!%b %d, %y"
+set index_format = "%4C %Z %{%b %d, %y} %-18.18L %s"
+set mail_check_stats
+set markers = no
+set mark_old = no
+set mime_forward = yes
+set forward_format = "Fwd: %s"
+set forward_quote
+set reverse_name
+set include
+set wrap = 80
+
+set realname = "Connor Davis"
+set smtp_url = smtp://$from@smtp.gmail.com:587
+set smtp_pass = `pass gmail/connojdavis.apppass`
+set ssl_force_tls
+set ssl_starttls
+
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+virtual-mailboxes "inbox" "notmuch://?query=tag:inbox"
+virtual-mailboxes "sent" "notmuch://?query=tag:sent"
+virtual-mailboxes "riscv" "notmuch://?query=tag:riscv"
+virtual-mailboxes "xen" "notmuch://?query=tag:xen"
+virtual-mailboxes "xsa" "notmuch://?query=tag:xsa"
+virtual-mailboxes "sel4" "notmuch://?query=tag:sel4"
