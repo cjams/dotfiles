@@ -1,2 +1,2 @@
-bindkey ',a' end-of-line
+bindkey ',c' end-of-line
 bindkey ',s' foward-word
