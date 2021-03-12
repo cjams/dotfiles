@@ -84,10 +84,15 @@ augroup filetype_vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 
+augroup filetype_go
+    autocmd!
+    autocmd FileType go setlocal noexpandtab tabstop=8 shiftwidth=8 autoindent
 augroup markdown
     au!
     au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
+
+au BufNewFile,BufRead /tmp/*mutt* setlocal tw=72 noautoindent filetype=mail
 
 " }}}
 
@@ -157,10 +162,4 @@ nnoremap <leader>gc :Gcommit<cr>
 nnoremap <leader>gs :Gstatus<cr>
 nnoremap <leader>gd :Gdiff<cr>
 
-" }}}
-
-" local sourcings ------------------------------------------------------------{{{
-"if filereadable(expand('~/bareflank/vimrc'))
-"    source ~/bareflank/vimrc
-"endif
 " }}}
