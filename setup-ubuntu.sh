@@ -2,7 +2,7 @@
 set -e
 
 pkgs="tree vim zsh silversearcher-ag curl deepin-terminal"
-pkgs="$pkgs mbsync neomutt notmuch pass pass-extension-tomb lynx"
+pkgs="$pkgs isync neomutt notmuch pass pass-extension-tomb lynx"
 pkgs="$pkgs syncthing keepassxc"
 sudo apt install -y $pkgs
 
