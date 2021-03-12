@@ -72,6 +72,7 @@ ln -fsv $dir/notmuch-config $HOME/.notmuch-config
 ln -fsv $dir/notmuch-post-new.sh $HOME/mail/.notmuch/hooks/post-new
 ln -fsv $dir/mbsync.service $HOME/.config/systemd/user/mbsync.service
 ln -fsv $dir/mbsync.timer $HOME/.config/systemd/user/mbsync.timer
+ln -fsv $dir/mbsyncrc $HOME/.mbsyncrc
 ln -fsv $dir/neomutt $HOME/.neomutt
 
 systemctl --user enable mbsync.timer
