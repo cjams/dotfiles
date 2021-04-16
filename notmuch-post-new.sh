@@ -29,5 +29,9 @@ notmuch tag +sel4 +list -- tag:new and to:"/.*@sel4.systems/"
 notmuch tag +inbox +unread -new -- tag:new and tag:sel4 and to:$me
 notmuch tag +listinbox +unread +list -new -- tag:new and tag:sel4 and not to:$me
 
+notmuch tag +llvm +list -- tag:new and to:"/.*@lists.llvm.org/"
+notmuch tag +inbox +unread -new -- tag:new and tag:llvm and to:$me
+notmuch tag +listinbox +unread +list -new -- tag:new and tag:llvm and not to:$me
+
 # finally, retag any remaining "new" messages "inbox" and "unread"
 notmuch tag +inbox +unread -new -- tag:new
