@@ -33,5 +33,13 @@ notmuch tag +llvm +list -- tag:new and to:"/.*@lists.llvm.org/"
 notmuch tag +inbox +unread -new -- tag:new and tag:llvm and to:$me
 notmuch tag +listinbox +unread +list -new -- tag:new and tag:llvm and not to:$me
 
+notmuch tag +linux-riscv +list -- tag:new and to:linux-riscv@lists.infradead.org
+notmuch tag +inbox +unread -new -- tag:new and tag:linux-riscv and to:$me
+notmuch tag +listinbox +unread +list -new -- tag:new and tag:linux-riscv and not to:$me
+
+notmuch tag +linux-rust +list -- tag:new and to:rust-for-linux@vger.kernel.org
+notmuch tag +inbox +unread -new -- tag:new and tag:linux-rust and to:$me
+notmuch tag +listinbox +unread +list -new -- tag:new and tag:linux-rust and not to:$me
+
 # finally, retag any remaining "new" messages "inbox" and "unread"
 notmuch tag +inbox +unread -new -- tag:new

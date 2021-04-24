@@ -74,10 +74,10 @@ endfun
 " }}}
 
 " augroups ----------------------------------------------------------------{{{
-"augroup format
-"    autocmd!
-"    autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
-"augroup END
+augroup format
+    autocmd!
+    autocmd BufWritePre * :call <SID>strip_trailing_whitespace()
+augroup END
 
 augroup filetype_vim
     autocmd!
