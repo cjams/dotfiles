@@ -3,6 +3,9 @@ set -e
 
 dir="$HOME/dotfiles"
 
+sudo amazon-linux-extras install epel -y
+sudo yum install -y zsh the_silver_searcher tree util-linux-user
+
 # Setup vimage
 
 cp -v $dir/vimrc $HOME/.vimrc
@@ -17,7 +20,13 @@ fi
 
 cd $HOME
 
+ZSH_BASE="$HOME/.oh-my-zsh"
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+
+if [ ! -d $ZSH_BASE ];
+    # Get oh-my-zsh
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
 if [ ! -d $ZSH_CUSTOM ];
 then
@@ -32,6 +41,3 @@ then
     ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
     ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
 fi
-
-# Get oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
