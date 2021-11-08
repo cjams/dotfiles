@@ -5,6 +5,7 @@ dir="$HOME/dotfiles"
 
 sudo amazon-linux-extras install epel -y
 sudo yum install -y zsh the_silver_searcher tree util-linux-user
+sudo yum install -y kernel-devel-$(uname -r) python3-devel nasm
 
 # Setup vimage
 
