@@ -3,7 +3,7 @@ set -e
 
 dir="$HOME/dotfiles"
 
-sudo amazon-linux-extras install epel -y
+sudo rpm -ivh --force https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo yum install -y zsh the_silver_searcher tree util-linux-user
 sudo yum install -y kernel-devel-$(uname -r) python3-devel nasm
 
@@ -24,15 +24,11 @@ cd $HOME
 ZSH_BASE="$HOME/.oh-my-zsh"
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
-if [ ! -d $ZSH_BASE ];
+if [ ! -d "$ZSH_BASE" ];
+then
     # Get oh-my-zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
-if [ ! -d $ZSH_CUSTOM ];
-then
-    mkdir -p $ZSH_CUSTOM/{plugins,themes}
-
+else
     git clone --depth=1 https://github.com/softmoth/zsh-vim-mode $ZSH_CUSTOM/plugins/zsh-vim-mode
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
     git clone --depth=1 https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
