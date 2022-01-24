@@ -25,8 +25,9 @@ ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 if [ ! -d "$ZSH_BASE" ];
 then
     # Get oh-my-zsh
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-else
+    wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    sh install.sh --unattended
+
     git clone --depth=1 https://github.com/softmoth/zsh-vim-mode $ZSH_CUSTOM/plugins/zsh-vim-mode
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
     git clone --depth=1 https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
@@ -35,4 +36,7 @@ else
     # Link custom zsh bits
     ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
     ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
+
+    cp -v $dir/zshrc $HOME/.zshrc
+    cp -v $dir/p10k.zsh $HOME/.p10k.zsh
 fi
