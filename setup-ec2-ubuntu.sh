@@ -3,6 +3,7 @@ set -e
 
 dir="$HOME/dotfiles"
 
+sudo apt update
 sudo apt install -y zsh
 
 # Setup vimage
