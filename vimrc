@@ -92,6 +92,11 @@ augroup markdown
     au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
 
+augroup antlr
+    au!
+    au BufNewFile,BufRead *.g4 setlocal filetype=antlr
+augroup END
+
 au BufNewFile,BufRead /tmp/*mutt* setlocal tw=72 noautoindent filetype=mail
 
 " }}}
