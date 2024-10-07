@@ -3,7 +3,7 @@ set -e
 
 pkgs="tree vim zsh silversearcher-ag curl deepin-terminal"
 pkgs="$pkgs isync neomutt notmuch pass pass-extension-tomb lynx"
-pkgs="$pkgs syncthing keepassxc"
+pkgs="$pkgs syncthing keepassxc fontconfig"
 sudo apt install -y $pkgs
 
 rm -rf $HOME/.gitconfig

@@ -4,7 +4,7 @@ set -e
 dir="$HOME/dotfiles"
 
 sudo apt update
-sudo apt install -y zsh
+sudo apt install -y zsh fontconfig
 
 # Setup vimage
 cp -v $dir/vimrc $HOME/.vimrc
