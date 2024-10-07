@@ -1,14 +1,18 @@
 #!/bin/bash
-set -e
 
-if [ "$#" -ne 6 ]; then
-    echo "Usage: setup-pi.sh -p <rpc_pass> -a <mullvad_account_id> -l <mullvad_vpn_location>"
-    echo "Example: setup-pi.sh -p 'fo0bA&' -a 123459038395 -l us-den-wg-002"
+if [ "$#" -lt 6 ]; then
+    echo "Usage: setup-bitcoin-node.sh -p <rpc_pass> -a <mullvad_account_id> -l <mullvad_vpn_location> -d <external_storage>"
+    echo "Example: setup-bitcoin-node.sh -p 'fo0bA&' -a 123459038395 -l us-den-wg-002"
+    echo "Parameters:"
+    echo "    -p,--rpc-pass                rpc password. This is fed through rpcauth.py to generate rpcauth"
+    echo "    -a,--mullvad-account-id      mullvad account id"
+    echo "    -l,--mullvad-location        mullvad relay location"
+    echo "    -d,--mount-device            external storage device (e.g. /dev/sda) on which to mount the datadir [optional]"
     exit 22
 fi
 
 # Initialize variables for storing option values
-while getopts ":p:a:l:" opt; do
+while getopts ":p:a:l:d:" opt; do
   case $opt in
     p)
       rpc_pass="$OPTARG"
@@ -18,6 +22,9 @@ while getopts ":p:a:l:" opt; do
       ;;
     l)
       mullvad_location="$OPTARG"
+      ;;
+    d)
+      mount_device="$OPTARG"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -45,6 +52,9 @@ for arg in "$@"; do
         ;;
       mullvad-location)
         mullvad_location=$value
+        ;;
+      mount-device)
+        mount_device=$value
         ;;
       *)
         echo "Invalid long-form option: $key" >&2
@@ -101,7 +111,14 @@ sudo curl -fsSLo /usr/share/keyrings/mullvad-keyring.asc https://repository.mull
 echo "deb [signed-by=/usr/share/keyrings/mullvad-keyring.asc arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/mullvad.list
 sudo apt update
 sudo apt install mullvad-vpn
-mullvad account login $mullvad_account_id
+
+device=$(mullvad account get | grep 'Device name:')
+if [ "$?" -ne 0 ]; then
+    mullvad account login $mullvad_account_id
+else
+    echo "Device is already registered with mullvad as $device"
+fi
+
 mullvad lan set allow
 mullvad relay set tunnel-protocol wireguard
 mullvad relay set location $mullvad_location
@@ -123,13 +140,13 @@ cmake --build build -j$(nproc)
 sudo cmake --install build
 
 # Create bitcoin user:group
-#sudo adduser --gecos "" --disabled-password bitcoin
-#sudo usermod -aG bitcoin $USER
+group_check=$(getent group bitcoin)
+if [ "$?" -ne 0 ]; then
+    sudo adduser --gecos "" --disabled-password bitcoin
+    sudo usermod -aG bitcoin $USER
+fi
 
 # Generate configuration
-sudo mkdir -p /etc/bitcoin
-sudo chown bitcoin:bitcoin /etc/bitcoin
-sudo chmod 770 /etc/bitcoin
 BUILDDIR=build contrib/devtools/gen-bitcoin-conf.sh
 
 rpcauth=$(python3 share/rpcauth/rpcauth.py $USER $rpc_pass | grep 'rpcauth=' | cut -d '=' -f 2)
@@ -144,15 +161,30 @@ sed -i 's|#rpccookieperms=<readable-by>|rpccookieperms=group|' share/examples/bi
 sed -i 's|#datadir=<dir>|datadir=/var/lib/bitcoind|' share/examples/bitcoin.conf
 sed -i "s|#rpcauth=<userpw>|rpcauth=$rpcauth|" share/examples/bitcoin.conf
 
+sudo mkdir -p /etc/bitcoin
 sudo cp -v share/examples/bitcoin.conf /etc/bitcoin/
-sudo chown bitcoin:bitcoin /etc/bitcoin/bitcoin.conf
+sudo chown -R bitcoin:bitcoin /etc/bitcoin
+sudo chmod 750 /etc/bitcoin
 
 # Generate datadir
 sudo mkdir -p /var/lib/bitcoind
-sudo chown bitcoin:bitcoin /var/lib/bitcoind
-sudo chmod 755 /var/lib/bitcoind
+sudo chown -R bitcoin:bitcoin /var/lib/bitcoind
+sudo chmod 750 /var/lib/bitcoind
 
-# Let's get it on
-sudo cp -v contrib/init/bitcoind.service /usr/lib/systemd/system/
+# Install external drive mount service. Note that since StateDirectory
+# is specified in bitcoind.service, systemd automatically adds a Requires=
+# and After= dependency on the mount unit.
+if [ -n $mount_device ]; then
+    cmd=$(lsblk $mount_device)
+    if [ "$?" -eq 0 ]; then
+        sudo cp -v $dir/var-lib-bitcoind.mount /etc/systemd/system/
+        sed -i "s|@DEVICE@|$mount_device|" /etc/systemd/system/var-lib-bitcoind.mount
+        sudo systemctl start var-lib-bitcoind.mount
+        sudo systemctl enable var-lib-bitcoind.mount
+    fi
+fi
+
+# Let's geeeet it on
+sudo cp -v $dir/bitcoind.service /etc/systemd/system/
 sudo systemctl enable bitcoind.service
 sudo systemctl start bitcoind.service
