@@ -67,7 +67,7 @@ done
 dir="$HOME/dotfiles"
 
 sudo apt update
-sudo apt install -y zsh vim silversearcher-ag
+sudo apt install -y zsh vim silversearcher-ag libzmq3-dev
 
 # Setup vimage
 cp -v $dir/vimrc $HOME/.vimrc
@@ -135,7 +135,7 @@ cd bitcoin
 
 # The systemd service expects bitcoind to live under /usr/bin,
 # hence we specify -DCMAKE_INSTALL_PREFIX=/usr
-cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTS=OFF -DBUILD_TESTING=OFF
+cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTS=OFF -DBUILD_TESTING=OFF -DWITH_ZMQ=ON
 cmake --build build -j$(nproc)
 sudo cmake --install build
 
