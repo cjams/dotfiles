@@ -61,3 +61,6 @@ wget -O https://github.com/neovim/neovim/releases/download/v0.10.3/nvim-linux64.
 tar xvf nvim-linux64.tar.gz
 sudo mkdir -p /usr/local/bin
 sudo cp -v nvim-linux64/bin/nvim /usr/local/bin
+mkdir -p $HOME/.config/nvim/lua/user
+cp -v $HOME/dotfiles/init.lua $HOME/.config/nvim/init.lua
+cp -v $HOME/dotfiles/vscode_keymaps.lua $HOME/.config/nvim/lua/user/
