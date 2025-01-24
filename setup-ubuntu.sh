@@ -1,80 +1,63 @@
 #!/bin/bash
 set -e
 
-pkgs="tree vim zsh silversearcher-ag curl deepin-terminal"
-pkgs="$pkgs isync neomutt notmuch pass pass-extension-tomb lynx"
-pkgs="$pkgs syncthing keepassxc fontconfig"
-sudo apt install -y $pkgs
-
-rm -rf $HOME/.gitconfig
-rm -rf $HOME/.vim
-rm -rf $HOME/.vimrc
-rm -rf $HOME/.bashrc
-rm -rf $HOME/.inputrc
-rm -rf $HOME/.gnupg
-
 dir="$HOME/dotfiles"
 
-ln -fsv $dir/gitconfig $HOME/.gitconfig
-ln -fsv $dir/vim $HOME/.vim
-ln -fsv $dir/vimrc $HOME/.vimrc
-ln -fsv $dir/bashrc $HOME/.bashrc
-ln -fsv $dir/inputrc $HOME/.inputrc
-ln -fsv $dir/zshrc $HOME/.zshrc
-ln -fsv $dir/p10k.zsh $HOME/.p10k.zsh
-ln -fsv $dir/gpg.conf $HOME/.gnupg/gpg.conf
+sudo apt update
+sudo apt install -y zsh fontconfig tmux vim tree gnome-keyring neovim
 
-sed -i "s|/home/connojd|/home/$USER|" $HOME/.zshrc
+# Setup vimage
+cp -v $dir/vimrc $HOME/.vimrc
 
-cd $HOME/.vim
-if [ ! -d bundle ];
+if [ ! -d $HOME/.vim/bundle ];
 then
+    mkdir -p $HOME/.vim
+    cd $HOME/.vim
     git clone https://github.com/VundleVim/Vundle.vim.git bundle/Vundle.vim
+    vim +PluginInstall +qall
 fi
 
-vim +PluginInstall +qall
+cd $HOME
 
-# Get patched powerline fonts
-wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
-wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
-wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
-wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
-
-sudo mkdir -p /usr/share/fonts/truetype
-
-sudo mv 'MesloLGS NF Regular.ttf' /usr/share/fonts/truetype/
-sudo mv 'MesloLGS NF Bold.ttf' /usr/share/fonts/truetype/
-sudo mv 'MesloLGS NF Italic.ttf' /usr/share/fonts/truetype/
-sudo mv 'MesloLGS NF Bold Italic.ttf' /usr/share/fonts/truetype/
-
-fc-cache -f
-sed -i 's|font=\(.*\)|font=MesloLGS NF|' ~/.config/deepin/deepin-terminal/config.conf
-
-# Get oh-my-zsh, plugins, and themes
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
+ZSH_BASE="$HOME/.oh-my-zsh"
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
-git clone --depth=1 https://github.com/softmoth/zsh-vim-mode $ZSH_CUSTOM/plugins/zsh-vim-mode
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-git clone --depth=1 https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
-git clone --depth=1 https://github.com/romkatv/powerlevel10k $ZSH_CUSTOM/themes/powerlevel10k
+if [ ! -d "$ZSH_BASE" ];
+then
+    # Get oh-my-zsh
+    wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    sh install.sh --unattended
 
-# Link custom zsh bits
-ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
-ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
+    git clone --depth=1 https://github.com/softmoth/zsh-vim-mode $ZSH_CUSTOM/plugins/zsh-vim-mode
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+    git clone --depth=1 https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k $ZSH_CUSTOM/themes/powerlevel10k
 
-# Setup mail services
-mkdir -p $HOME/mail/.notmuch/hooks
-mkdir -p $HOME/.config/systemd/user
+    # Link custom zsh bits
+    ln -fsv $dir/oh-my-zsh/custom/alias.zsh $ZSH_CUSTOM/alias.zsh
+    ln -fsv $dir/oh-my-zsh/custom/bindkey.zsh $ZSH_CUSTOM/bindkey.zsh
 
-ln -fsv $dir/notmuch-config $HOME/.notmuch-config
-ln -fsv $dir/notmuch-post-new.sh $HOME/mail/.notmuch/hooks/post-new
-ln -fsv $dir/mbsync.service $HOME/.config/systemd/user/mbsync.service
-ln -fsv $dir/mbsync.timer $HOME/.config/systemd/user/mbsync.timer
-ln -fsv $dir/mbsyncrc $HOME/.mbsyncrc
-ln -fsv $dir/neomutt $HOME/.neomutt
+    cp -v $dir/zshrc $HOME/.zshrc
+    cp -v $dir/p10k.zsh $HOME/.p10k.zsh
+fi
 
-systemctl --user enable mbsync.timer
+# vscode
+cd $HOME/Downloads
+wget -O vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+sudo dpkg -i vscode.deb
 
-notmuch setup
+# fonts
+git clone --depth 1 https://github.com/ryanoasis/nerd-fonts
+cd nerd-fonts
+./install.sh SourceCodePro
+./install.sh Meslo
+
+# tmux
+cp $HOME/dotfiles/tmux.conf $HOME/.tmux.conf
+
+# nvim
+cd $HOME/Downloads
+wget -O https://github.com/neovim/neovim/releases/download/v0.10.3/nvim-linux64.tar.gz
+tar xvf nvim-linux64.tar.gz
+sudo mkdir -p /usr/local/bin
+sudo cp -v nvim-linux64/bin/nvim /usr/local/bin
