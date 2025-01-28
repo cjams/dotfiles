@@ -52,7 +52,8 @@ done
 
 sudo apt update
 sudo apt upgrade
-sudo apt install nginx certbot python3-certbot-nginx
+sudo apt install nginx certbot python3-certbot-nginx python-is-python3
+sudo apt install python3-venv
 
 sudo certbot --nginx -d $domain
 sudo cp -v $HOME/dotfiles/nginx.conf /etc/nginx/conf.d/default.conf

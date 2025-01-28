@@ -4,7 +4,7 @@ set -e
 dir="$HOME/dotfiles"
 
 sudo apt update
-sudo apt install -y zsh fontconfig
+sudo apt install -y zsh fontconfig fonts-powerline
 
 # Setup vimage
 cp -v $dir/vimrc $HOME/.vimrc
