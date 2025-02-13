@@ -58,7 +58,7 @@ sudo apt install python3-venv
 sudo certbot --nginx -d $domain
 sudo cp -v $HOME/dotfiles/nginx.conf /etc/nginx/conf.d/default.conf
 
-sed -i "s|@DOMAIN@|$domain|" /etc/nginx/conf.d/default.conf
-sed -i "s|@PORT@|$port|" /etc/nginx/conf.d/default.conf
+sed "s|@DOMAIN@|$domain|" /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
+sed "s|@PORT@|$port|" /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 
 sudo systemctl enable nginx --now
